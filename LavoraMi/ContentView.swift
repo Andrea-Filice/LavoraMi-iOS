@@ -42,6 +42,10 @@ struct ContentView: View {
                 .tabItem{
                     Label("Home", systemImage: "house")
                 }
+            LinesView()
+                .tabItem{
+                    Label("Linee", systemImage: "arrow.branch")
+                }
             SettingsView()
                 .tabItem{Label("Impostazioni", systemImage: "gear")}
         }
@@ -56,7 +60,7 @@ struct MainView: View{
     @State private var searchInput: String = ""
     @StateObject private var viewModel = WorkViewModel()
     @FocusState private var isSearchFocused: Bool
-
+    
     init() {
         _preferredFilter = AppStorage(wrappedValue: .all, "preferredFilter")
         _selectedFilter = State(initialValue: _preferredFilter.wrappedValue)
@@ -115,6 +119,7 @@ struct MainView: View{
                     
                     Button(action: {
                         viewModel.fetchWorks()
+                        viewModel.fetchVariables()
                     }) {
                         Image(systemName: "arrow.clockwise")
                             .font(.title2)
@@ -151,13 +156,19 @@ struct MainView: View{
                         .frame(maxWidth: .infinity, alignment: .center)
                         .foregroundStyle(Color("TextColor"))
                    
-                    Text("Sciopero proclamato per il 17/01/2026")
+                    Text("Sciopero proclamato per il \(viewModel.dateStrike).")
                         .font(.system(size: 15))
                         .frame(maxWidth: .infinity, alignment: .center)
                         .foregroundStyle(Color("TextColor"))
                    
+                    Text("Le fasce garantite (06:00 - 09:00, 18:00 - 21:00) \(viewModel.guaranteed)")
+                        .font(.system(size: 15))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .foregroundStyle(Color("TextColor"))
+                        .padding(.horizontal, 10)
+                        .multilineTextAlignment(.center)
                     HStack {
-                        Text("ATM, Trenord e Movibus")
+                        Text("Aderenti: \(viewModel.companiesStrikes)")
                             .font(.system(size: 18, weight: .bold))
                             .foregroundStyle(Color("TextColor"))
                             .padding(.vertical, 4)
@@ -173,6 +184,7 @@ struct MainView: View{
                 .background(Color.gray.opacity(0.2))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .padding(.horizontal)
+                .padding(.bottom, 10)
             }
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
@@ -184,7 +196,7 @@ struct MainView: View{
                                 selectedFilter = filter
                             }
                         }){
-                        Text(filter.rawValue)
+                            Text(filter.rawValue)
                             .font(.subheadline)
                             .fontWeight(.medium)
                             .padding(.vertical, 8)
@@ -260,6 +272,7 @@ struct MainView: View{
             }
             .onAppear(){
                 viewModel.fetchWorks()
+                viewModel.fetchVariables()
                 NotificationManager.shared.requestPermission()
             }
         }
@@ -305,14 +318,17 @@ struct WorkInProgressRow: View {
                 VStack(spacing: 6) {
                     ProgressView(value: item.progress)
                         .progressViewStyle(.linear)
-                        .tint(item.progress == 1.0 ? .green : .orange)
+                        .tint(item.progress == 1.0 ? .green : .red)
 
                     HStack {
-                        Text(item.startDate.formatted(date: .abbreviated, time: .omitted))
+                        let italianLoc = Date.FormatStyle(date: .abbreviated, time: .omitted)
+                                .locale(Locale(identifier: "it_IT"))
+                        
+                        Text(item.startDate.formatted(italianLoc))
                             .font(.caption)
                             .foregroundStyle(Color("TextColor"))
                         Spacer()
-                        Text(item.endDate.formatted(date: .abbreviated, time: .omitted))
+                        Text(item.endDate.formatted(italianLoc))
                             .font(.caption)
                             .foregroundStyle(Color("TextColor"))
                     }
@@ -434,7 +450,7 @@ struct SettingsView: View{
                     DisclosureGroup(isExpanded: $expandedATM){
                         DisclosureGroup(isExpanded: $expandedATMLines) {
                             ForEach(metroLines, id: \.self) { line in
-                                LineRow(line: line, favorites: $linesFavorites)
+                                LineFavouritesRow(line: line, favorites: $linesFavorites)
                             }
                         } label: {
                             Label("Linee Metro", systemImage: "tram.fill.tunnel")
@@ -492,7 +508,7 @@ struct SettingsView: View{
                                 .foregroundStyle(Color("TextColor"))
                         }
                     } label: {
-                        Label("Filtro Predefinitivo", systemImage: "line.3.horizontal.decrease.circle.fill")
+                        Label("Filtro Predefinito", systemImage: "line.3.horizontal.decrease.circle.fill")
                     }
                     .pickerStyle(.navigationLink)
                 }
@@ -505,7 +521,8 @@ struct SettingsView: View{
                         Label("Ripristina impostazioni", systemImage: "arrow.counterclockwise")
                     }
                 }
-                Section("Test"){
+                //* MARK: Notification Tests
+                /*Section("Test"){
                     let test = WorkItem(
                         title: "Lavori Stradali", titleIcon: "tram", typeOfTransport: "tram", roads: "Via Negrelli", lines:["104", "67", "69"], startDate: Calendar.current.date(from: .init(year: 2026, month: 01, day: 06))!, endDate: Calendar.current.date(from: .init(year: 2026, month: 01, day: 07))!, details: "Picchio i Froci", company: "ATM"
                     )
@@ -517,7 +534,7 @@ struct SettingsView: View{
                     Button("Prova Notifica Immediata"){
                         NotificationManager.shared.sendNotification()
                     }
-                }
+                }*/
             }
             .navigationTitle("Impostazioni")
             .alert("Sei sicuro?", isPresented: $presentedAlertReset) {
@@ -534,7 +551,7 @@ struct SettingsView: View{
     }
 }
 
-struct LineRow: View {
+struct LineFavouritesRow: View {
     let line: String
     @Binding var favorites: [String]
     
@@ -574,6 +591,149 @@ struct LineRow: View {
     }
 }
 
+struct LineRow: View {
+    let line: String
+    let typeOfTransport: String
+    let branches: String
+    
+    var body: some View {
+        NavigationLink(destination: LineDetailView(lineName: line, typeOfTransport: typeOfTransport, branches: branches)){
+            HStack(spacing: 12) {
+                Text(line)
+                    .foregroundStyle(.white)
+                    .font(.system(size: 12, weight: .bold))
+                    .padding(.vertical, 4)
+                    .padding(.horizontal, 8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill((typeOfTransport == "Tram") ? .orange :getColor(for: line))
+                    )
+                
+                Text("\(typeOfTransport) \(line)")
+            }
+            .padding(.vertical, 4)
+        }
+    }
+}
+
+struct LinesView: View {
+    let metros: [LineInfo] = [
+            LineInfo(name: "M1", branches: "Sesto F.S. - Rho Fiera / Bisceglie", type: "Metro"),
+            LineInfo(name: "M2", branches: "Gessate / Cologno - Assago / Abbiategrasso", type: "Metro"),
+            LineInfo(name: "M3", branches: "Comasina - San Donato", type: "Metro"),
+            LineInfo(name: "M4", branches: "Linate - San Cristoforo", type: "Metro"),
+            LineInfo(name: "M5", branches: "Bignami - San Siro Stadio", type: "Metro")
+        ]
+    let trams = ["1", "2", "3", "4", "5", "7", "9", "10", "12", "14", "15", "16", "19", "24", "27", "31", "33"]
+    
+    var body: some View {
+        NavigationStack{
+            List{
+                Section("Linee Metropolitane"){
+                    ForEach(metros, id: \.id) { line in
+                        LineRow(line: line.name, typeOfTransport: line.type, branches: line.branches)
+                    }
+                }
+                /*Section("Linee Tram"){
+                    ForEach(trams, id: \.self) {tramLine in
+                        LineRow(line: tramLine, typeOfTransport: "Tram")
+                    }
+                }*/
+            }
+            .navigationTitle("Linee")
+        }
+    }
+}
+
+import SwiftUI
+import MapKit // <--- FONDAMENTALE PER LA MAPPA
+
+struct LineDetailView: View {
+    let lineName: String
+    let typeOfTransport: String
+    let branches: String
+    
+    @State private var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 45.4642, longitude: 9.1900),
+        span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+    )
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 20) {
+                    HStack(spacing: 12) {
+                        Text(lineName)
+                            .foregroundStyle(.white)
+                            .font(.system(size: 40, weight: .bold))
+                            .padding(.vertical, 4)
+                            .padding(.horizontal, 8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill((typeOfTransport == "Tram") ? .orange : getColor(for: lineName))
+                            )
+                        
+                        Text("\(typeOfTransport) \(lineName)")
+                            .font(.system(size: 30))
+                            .minimumScaleFactor(0.5)
+                            .lineLimit(1)
+                    }
+                    
+                    Divider()
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("DIREZIONI:")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .bold()
+                        
+                        Text(branches)
+                            .font(.title3)
+                            .multilineTextAlignment(.leading)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("TEMPO DI ATTESA MEDIO:")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .bold()
+                        
+                        Text("3-7 Minuti")
+                            .font(.title3)
+                            .multilineTextAlignment(.leading)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("LAVORI SULLA LINEA:")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .bold()
+                        
+                        Text("0 attuali, 0 programmati.")
+                            .font(.title3)
+                            .multilineTextAlignment(.leading)
+                    }
+                    
+                    Spacer()
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: .infinity)
+                .padding(.top, 20)
+                .background(Color(uiColor: .systemBackground))
+                
+                
+                Map(coordinateRegion: $region)
+                    .frame(maxWidth: .infinity)
+                    .frame(maxHeight: .infinity)
+                    .padding(.bottom, 100)
+                    .ignoresSafeArea(edges: .bottom)
+                
+            }
+            .navigationTitle("Dettagli Linea")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+}
 
 //FILTERS
 enum FilterBy: String, CaseIterable, Identifiable {
@@ -591,6 +751,13 @@ enum FilterBy: String, CaseIterable, Identifiable {
     case Autoguidovie = "di Autoguidovie"
     
     var id: String{self.rawValue}
+}
+
+struct LineInfo: Identifiable {
+    let id = UUID()
+    let name: String
+    let branches: String
+    let type: String
 }
 
 func getColor(for line: String) -> Color {
@@ -621,6 +788,12 @@ func getColor(for line: String) -> Color {
         case "M3": return Color(red: 252/255, green: 190/255, blue: 0)
         case "M4": return Color(red: 0, green: 22/255, blue: 137/255)
         case "M5": return Color(red: 165/255, green: 147/255, blue: 198/255)
+        
+        //BUS LINES
+        case _ where line.contains("z"):
+            return Color(red: 28/255, green: 28/255, blue: 1)
+        case _ where line.contains("Filobus"):
+            return Color(red: 101/255, green: 179/255, blue: 46/255)
         
         //OTHER LINES
         case "MXP": return Color(red: 140/255, green: 0, blue: 118/255)

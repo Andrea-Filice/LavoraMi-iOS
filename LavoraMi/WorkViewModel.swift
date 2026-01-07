@@ -16,6 +16,7 @@ class WorkViewModel: ObservableObject {
     @Published var strikeEnabled: Bool = false
     @Published var companiesStrikes: String = ""
     @Published var dateStrike: String = ""
+    @Published var guaranteed: String = ""
     
     private let urlString = "https://cdn-playepik.netlify.app/LavoraMI/lavoriAttuali.json"
     private let urlVariables = "https://cdn-playepik.netlify.app/LavoraMI/_vars.json"
@@ -98,6 +99,7 @@ class WorkViewModel: ObservableObject {
                     self?.strikeEnabled = (result.enableStrike == "true")
                     self?.companiesStrikes = result.companies
                     self?.dateStrike = result.date
+                    self?.guaranteed = result.guaranteed
                 }
             } catch {
                 DispatchQueue.main.async {
@@ -112,4 +114,5 @@ struct RemoteConfigData: Codable {
     let enableStrike: String
     let date: String
     let companies: String
+    let guaranteed: String
 }
