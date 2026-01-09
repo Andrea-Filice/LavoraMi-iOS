@@ -51,6 +51,48 @@ struct StationsDB {
         .init(name: "Inganni", coordinate: .init(latitude: 45.45756, longitude: 9.12225), branch: "Bisceglie"),
         .init(name: "Bisceglie", coordinate: .init(latitude: 45.45531, longitude: 9.11335), branch: "Bisceglie")
     ]
+
+    static let stationsM2: [MetroStation] = [
+        .init(name: "Assago Forum", coordinate: .init(latitude: 45.40183, longitude: 9.14562), branch: "Assago"),
+        .init(name: "Assago Milanofiori Nord", coordinate: .init(latitude: 45.40945, longitude: 9.15004), branch: "Assago"),
+
+        .init(name: "P.Za Abbiategrasso", coordinate: .init(latitude: 45.42984, longitude: 9.17838), branch: "Abbiategrasso"),
+
+        .init(name: "Famagosta", coordinate: .init(latitude: 45.43719, longitude: 9.16795), branch: "Main"),
+        .init(name: "Romolo", coordinate: .init(latitude: 45.44373, longitude: 9.16767), branch: "Main"),
+        .init(name: "Porta Genova FS", coordinate: .init(latitude: 45.45273, longitude: 9.16972), branch: "Main"),
+        .init(name: "S. Agostino", coordinate: .init(latitude: 45.45834, longitude: 9.16977), branch: "Main"),
+        .init(name: "S. Ambrogio", coordinate: .init(latitude: 45.46185, longitude: 9.17325), branch: "Main"),
+        .init(name: "Cadorna FN", coordinate: .init(latitude: 45.4682, longitude: 9.17588), branch: "Main"),
+        .init(name: "Lanza", coordinate: .init(latitude: 45.47196, longitude: 9.18273), branch: "Main"),
+        .init(name: "Moscova", coordinate: .init(latitude: 45.4775, longitude: 9.18471), branch: "Main"),
+        .init(name: "Garibaldi FS", coordinate: .init(latitude: 45.48351, longitude: 9.18671), branch: "Main"),
+        .init(name: "Gioia", coordinate: .init(latitude: 45.48462, longitude: 9.19523), branch: "Main"),
+        .init(name: "Centrale FS", coordinate: .init(latitude: 45.48469, longitude: 9.20274), branch: "Main"),
+        .init(name: "Caiazzo", coordinate: .init(latitude: 45.48525, longitude: 9.2091), branch: "Main"),
+        .init(name: "Loreto", coordinate: .init(latitude: 45.48584, longitude: 9.21638), branch: "Main"),
+        .init(name: "Piola", coordinate: .init(latitude: 45.48081, longitude: 9.22509), branch: "Main"),
+        .init(name: "Lambrate FS", coordinate: .init(latitude: 45.48423, longitude: 9.235), branch: "Main"),
+        .init(name: "Udine", coordinate: .init(latitude: 45.49145, longitude: 9.23688), branch: "Main"),
+        .init(name: "Cimiano", coordinate: .init(latitude: 45.50004, longitude: 9.24142), branch: "Main"),
+        .init(name: "Crescenzago", coordinate: .init(latitude: 45.50521, longitude: 9.24822), branch: "Main"),
+        .init(name: "Cascina Gobba", coordinate: .init(latitude: 45.51114, longitude: 9.26052), branch: "Main"),
+
+        .init(name: "Cologno Sud", coordinate: .init(latitude: 45.52021, longitude: 9.27492), branch: "Cologno"),
+        .init(name: "Cologno Centro", coordinate: .init(latitude: 45.52747, longitude: 9.28296), branch: "Cologno"),
+        .init(name: "Cologno Nord", coordinate: .init(latitude: 45.53426, longitude: 9.29111), branch: "Cologno"),
+
+        .init(name: "Vimodrone", coordinate: .init(latitude: 45.51574, longitude: 9.28564), branch: "Gessate"),
+        .init(name: "Cascina Burrona", coordinate: .init(latitude: 45.51736, longitude: 9.29783), branch: "Gessate"),
+        .init(name: "Cernusco Sul Naviglio", coordinate: .init(latitude: 45.52097, longitude: 9.33083), branch: "Gessate"),
+        .init(name: "Villa Fiorita", coordinate: .init(latitude: 45.5205, longitude: 9.34609), branch: "Gessate"),
+        .init(name: "Cassina De Pecchi", coordinate: .init(latitude: 45.52163, longitude: 9.36213), branch: "Gessate"),
+        .init(name: "Bussero", coordinate: .init(latitude: 45.52541, longitude: 9.3758), branch: "Gessate"),
+        .init(name: "Villa Pompea", coordinate: .init(latitude: 45.52778, longitude: 9.38505), branch: "Gessate"),
+        .init(name: "Gorgonzola", coordinate: .init(latitude: 45.53649, longitude: 9.4036), branch: "Gessate"),
+        .init(name: "Cascina Antonietta", coordinate: .init(latitude: 45.5421, longitude: 9.42364), branch: "Gessate"),
+        .init(name: "Gessate", coordinate: .init(latitude: 45.54524, longitude: 9.43656), branch: "Gessate")
+    ]
     
     static let stationsM3: [MetroStation] = [
         .init(name: "San Donato", coordinate: .init(latitude: 45.42897, longitude: 9.25653), branch: "Main"),
@@ -74,6 +116,30 @@ struct StationsDB {
         .init(name: "Affori Centro", coordinate: .init(latitude: 45.51358, longitude: 9.17417), branch: "Main"),
         .init(name: "Affori FN", coordinate: .init(latitude: 45.52087, longitude: 9.16901), branch: "Main"),
         .init(name: "Comasina", coordinate: .init(latitude: 45.52835, longitude: 9.16387), branch: "Main")
+    ]
+
+    static let stationsM4: [MetroStation] = [
+        .init(name: "Linate Aereoporto", coordinate: .init(latitude: 45.46284, longitude: 9.27791), branch: "Main"),
+        .init(name: "Repetti", coordinate: .init(latitude: 45.46201, longitude: 9.2404), branch: "Main"),
+        .init(name: "Stazione Forlanini", coordinate: .init(latitude: 45.46465, longitude: 9.2363), branch: "Main"),
+        .init(name: "Argonne", coordinate: .init(latitude: 45.46815, longitude: 9.23119), branch: "Main"),
+        .init(name: "Susa", coordinate: .init(latitude: 45.4682, longitude: 9.22499), branch: "Main"),
+        .init(name: "Dateo", coordinate: .init(latitude: 45.46799, longitude: 9.21845), branch: "Main"),
+        .init(name: "Tricolore", coordinate: .init(latitude: 45.46793, longitude: 9.20868), branch: "Main"),
+        .init(name: "San Babila", coordinate: .init(latitude: 45.46642, longitude: 9.19757), branch: "Main"),
+        .init(name: "Sforza-Policlinico", coordinate: .init(latitude: 45.45874, longitude: 9.19433), branch: "Main"),
+        .init(name: "Santa Sofia", coordinate: .init(latitude: 45.45633, longitude: 9.18863), branch: "Main"),
+        .init(name: "Vetra", coordinate: .init(latitude: 45.4571, longitude: 9.18262), branch: "Main"),
+        .init(name: "De Amicis", coordinate: .init(latitude: 45.45909, longitude: 9.17721), branch: "Main"),
+        .init(name: "S. Ambrogio", coordinate: .init(latitude: 45.46182, longitude: 9.17321), branch: "Main"),
+        .init(name: "Coni Zugna", coordinate: .init(latitude: 45.45909, longitude: 9.1649), branch: "Main"),
+        .init(name: "California", coordinate: .init(latitude: 45.45755, longitude: 9.16005), branch: "Main"),
+        .init(name: "Bolivar", coordinate: .init(latitude: 45.45538, longitude: 9.15316), branch: "Main"),
+        .init(name: "Tolstoj", coordinate: .init(latitude: 45.45538, longitude: 9.14801), branch: "Main"),
+        .init(name: "Frattini", coordinate: .init(latitude: 45.45538, longitude: 9.14245), branch: "Main"),
+        .init(name: "Gelsomini", coordinate: .init(latitude: 45.45538, longitude: 9.13542), branch: "Main"),
+        .init(name: "Segneri", coordinate: .init(latitude: 45.44695, longitude: 9.13086), branch: "Main"),
+        .init(name: "San Cristoforo", coordinate: .init(latitude: 45.44256, longitude: 9.13008), branch: "Main")
     ]
     
     static let stationsM5: [MetroStation] = [
