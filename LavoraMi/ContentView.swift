@@ -531,20 +531,6 @@ struct SettingsView: View{
                         Label("Ripristina impostazioni", systemImage: "arrow.counterclockwise")
                     }
                 }
-                //* MARK: Notification Tests
-                /*Section("Test"){
-                    let test = WorkItem(
-                        title: "Lavori Stradali", titleIcon: "tram", typeOfTransport: "tram", roads: "Via Negrelli", lines:["104", "67", "69"], startDate: Calendar.current.date(from: .init(year: 2026, month: 01, day: 06))!, endDate: Calendar.current.date(from: .init(year: 2026, month: 01, day: 07))!, details: "Picchio i Froci", company: "ATM"
-                    )
-                    
-                    Button("Prova Notifica Programmata"){
-                        NotificationManager.shared.scheduleWorkAlerts(for: test)
-                    }
-                    
-                    Button("Prova Notifica Immediata"){
-                        NotificationManager.shared.sendNotification()
-                    }
-                }*/
             }
             .navigationTitle("Impostazioni")
             .alert("Sei sicuro?", isPresented: $presentedAlertReset) {
