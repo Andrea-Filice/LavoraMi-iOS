@@ -843,19 +843,19 @@ struct LineDetailView: View {
                     )),
                     bounds: lombardyBounds
                     ){
-                        //OPTIMIZE THIS SWITCH
+                        let lineColor: Color = getColor(for: lineName)
                         switch(lineName){
                             case "M1":
                                 MapPolyline(coordinates: stations.filter { $0.branch == "Main" }.map(\.coordinate))
-                                    .stroke(Color(red: 228/255, green: 35/255, blue: 19/255), lineWidth: 5)
+                                    .stroke(lineColor, lineWidth: 5)
                                 let pagano = stations.first(where: { $0.name == "Pagano" })!
                                 let rhoBranch = [pagano] + stations.filter { $0.branch == "Rho" }
                                 MapPolyline(coordinates: rhoBranch.map(\.coordinate))
-                                    .stroke(Color(red: 228/255, green: 35/255, blue: 19/255), lineWidth: 5)
+                                    .stroke(lineColor, lineWidth: 5)
                                 
                                 let bisceglieBranch = [pagano] + stations.filter { $0.branch == "Bisceglie" }
                                 MapPolyline(coordinates: bisceglieBranch.map(\.coordinate))
-                                    .stroke(Color(red: 228/255, green: 35/255, blue: 19/255), lineWidth: 5)
+                                    .stroke(lineColor, lineWidth: 5)
                             
                                 ForEach(stations) { station in
                                     Annotation(station.name, coordinate: station.coordinate) {
@@ -864,31 +864,31 @@ struct LineDetailView: View {
                                                 .fill(.white)
                                                 .frame(width: 12, height: 12)
                                             Circle()
-                                                .stroke(Color(red: 228/255, green: 35/255, blue: 19/255), lineWidth: 3)
+                                                .stroke(lineColor, lineWidth: 3)
                                                 .frame(width: 12, height: 12)
                                         }
                                     }
                                 }
                             case "M2":
                                 MapPolyline(coordinates: stations.filter { $0.branch == "Main" }.map(\.coordinate))
-                                    .stroke(Color(red: 95/255, green: 147/255, blue: 34/255), lineWidth: 5)
+                                    .stroke(lineColor, lineWidth: 5)
                                 let famagosta = stations.first(where: { $0.name == "Famagosta" })!
                                 let assagoBranch = [famagosta] + stations.filter { $0.branch == "Assago" }
                                 MapPolyline(coordinates: assagoBranch.map(\.coordinate))
-                                    .stroke(Color(red: 95/255, green: 147/255, blue: 34/255), lineWidth: 5)
+                                    .stroke(lineColor, lineWidth: 5)
                                 
                                 let abbiategrassoBranch = [famagosta] + stations.filter { $0.branch == "Abbiategrasso" }
                                 MapPolyline(coordinates: abbiategrassoBranch.map(\.coordinate))
-                                    .stroke(Color(red: 95/255, green: 147/255, blue: 34/255), lineWidth: 5)
+                                    .stroke(lineColor, lineWidth: 5)
 
                                 let cascinaGobba = stations.first(where: { $0.name == "Cascina Gobba" })!
                                 let colognoBranch = [cascinaGobba] + stations.filter { $0.branch == "Cologno" }
                                 MapPolyline(coordinates: colognoBranch.map(\.coordinate))
-                                    .stroke(Color(red: 95/255, green: 147/255, blue: 34/255), lineWidth: 5)
+                                    .stroke(lineColor, lineWidth: 5)
                                 
                                 let gessateBranch = [cascinaGobba] + stations.filter { $0.branch == "Gessate" }
                                 MapPolyline(coordinates: gessateBranch.map(\.coordinate))
-                                    .stroke(Color(red: 95/255, green: 147/255, blue: 34/255), lineWidth: 5)
+                                    .stroke(lineColor, lineWidth: 5)
                             
                                 ForEach(stations) { station in
                                     Annotation(station.name, coordinate: station.coordinate) {
@@ -897,65 +897,28 @@ struct LineDetailView: View {
                                                 .fill(.white)
                                                 .frame(width: 12, height: 12)
                                             Circle()
-                                                .stroke(Color(red: 95/255, green: 147/255, blue: 34/255), lineWidth: 3)
+                                                .stroke(lineColor, lineWidth: 3)
                                                 .frame(width: 12, height: 12)
                                         }
                                     }
                                 }
 
-                            case "M3":
-                                MapPolyline(coordinates: stations.filter { $0.branch == "Main" }.map(\.coordinate))
-                                    .stroke(Color(red: 252/255, green: 190/255, blue: 0), lineWidth: 5)
-                            
-                                ForEach(stations) { station in
-                                    Annotation(station.name, coordinate: station.coordinate) {
-                                        ZStack {
-                                            Circle()
-                                                .fill(.white)
-                                                .frame(width: 12, height: 12)
-                                            Circle()
-                                                .stroke(Color(red: 252/255, green: 190/255, blue: 0), lineWidth: 3)
-                                                .frame(width: 12, height: 12)
-                                        }
-                                    }
-                                }
-
-                            case "M4":
-                                MapPolyline(coordinates: stations.filter { $0.branch == "Main" }.map(\.coordinate))
-                                        .stroke(Color(red: 0, green: 22/255, blue: 137/255), lineWidth: 5)
-                                
-                                    ForEach(stations) { station in
-                                        Annotation(station.name, coordinate: station.coordinate) {
-                                            ZStack {
-                                                Circle()
-                                                    .fill(.white)
-                                                    .frame(width: 12, height: 12)
-                                                Circle()
-                                                    .stroke(Color(red: 0, green: 22/255, blue: 137/255), lineWidth: 3)
-                                                    .frame(width: 12, height: 12)
-                                            }
-                                        }
-                                    }
-
-                            case "M5":
-                                MapPolyline(coordinates: stations.filter { $0.branch == "Main" }.map(\.coordinate))
-                                    .stroke(Color(red: 165/255, green: 147/255, blue: 198/255), lineWidth: 5)
-                            
-                                ForEach(stations) { station in
-                                    Annotation(station.name, coordinate: station.coordinate) {
-                                        ZStack {
-                                            Circle()
-                                                .fill(.white)
-                                                .frame(width: 12, height: 12)
-                                            Circle()
-                                                .stroke(Color(red: 165/255, green: 147/255, blue: 198/255), lineWidth: 3)
-                                                .frame(width: 12, height: 12)
-                                        }
-                                    }
-                                }
                             default:
-                                MapPolyline(coordinates: stations.map(\.coordinate))
-                                .stroke(.orange, lineWidth: 5)
+                                MapPolyline(coordinates: stations.filter { $0.branch == "Main" }.map(\.coordinate))
+                                    .stroke(lineColor, lineWidth: 5)
+                            
+                                ForEach(stations) { station in
+                                    Annotation(station.name, coordinate: station.coordinate) {
+                                        ZStack {
+                                            Circle()
+                                                .fill(.white)
+                                                .frame(width: 12, height: 12)
+                                            Circle()
+                                                .stroke(lineColor, lineWidth: 3)
+                                                .frame(width: 12, height: 12)
+                                        }
+                                    }
+                                }
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -972,7 +935,7 @@ struct LineDetailView: View {
         }
 }
 
-//FILTERS
+//NOTE: FILTERS
 enum FilterBy: String, CaseIterable, Identifiable {
     case all = "Tutti"
     case bus = "Bus"
