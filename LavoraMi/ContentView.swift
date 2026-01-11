@@ -728,7 +728,7 @@ struct LinesView: View {
             LineInfo(name: "S8", branches: "Lecco - Carnate - Milano Pta Garibaldi", type: "Suburbano", waitMinutes: "30 min.", stations: StationsDB.stationsS8),
             LineInfo(name: "S9", branches: "Saronno - Albairate Vermezzo", type: "Suburbano", waitMinutes: "30 min.", stations: StationsDB.stationsS9),
             LineInfo(name: "S11", branches: "Rho - Como S. Giovanni", type: "Suburbano", waitMinutes: "30 min.", stations: StationsDB.stationsS11),
-            LineInfo(name: "S12", branches: "Melegnano - Cormano", type: "Suburbano", waitMinutes: "30 min (solo in settimana il servizio è attivo).", stations: StationsDB.stationsS12),
+            LineInfo(name: "S12", branches: "Melegnano - Cormano", type: "Suburbano", waitMinutes: "30 min.", stations: StationsDB.stationsS12),
             LineInfo(name: "S13", branches: "Pavia - Milano Bovisa", type: "Suburbano", waitMinutes: "30 min.", stations: StationsDB.stationsS13),
             LineInfo(name: "S19", branches: "Albairate Vermezzo - Milano Rogoredo", type: "Suburbano", waitMinutes: "30 min.", stations: StationsDB.stationsS19),
             LineInfo(name: "S31", branches: "Brecia - Iseo", type: "Suburbano", waitMinutes: "1 ora.", stations: StationsDB.stationsS31)
