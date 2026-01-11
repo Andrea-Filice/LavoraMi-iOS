@@ -446,9 +446,9 @@ struct StationsDB {
     ]
     
     static let stationsS31: [MetroStation] = [
-        .init(name: "Brecia", coordinate: .init(latitude: 45.53252, longitude: 10.21297), branch: "Main"),
-        .init(name: "Brecia Borgo S. Giovanni", coordinate: .init(latitude: 45.54333, longitude: 10.19076), branch: "Main"),
-        .init(name: "Brecia Violino", coordinate: .init(latitude: 45.54511, longitude: 10.16873), branch: "Main"),
+        .init(name: "Brescia", coordinate: .init(latitude: 45.53252, longitude: 10.21297), branch: "Main"),
+        .init(name: "Brescia Borgo S. Giovanni", coordinate: .init(latitude: 45.54333, longitude: 10.19076), branch: "Main"),
+        .init(name: "Brescia Violino", coordinate: .init(latitude: 45.54511, longitude: 10.16873), branch: "Main"),
         .init(name: "Castegnato", coordinate: .init(latitude: 45.56608, longitude: 10.11827), branch: "Main"),
         .init(name: "Paderno Franciacorta", coordinate: .init(latitude: 45.58691, longitude: 10.08725), branch: "Main"),
         .init(name: "Passirano", coordinate: .init(latitude: 45.59021, longitude: 10.06359), branch: "Main"),
