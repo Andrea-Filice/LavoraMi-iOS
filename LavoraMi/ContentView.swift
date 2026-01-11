@@ -788,7 +788,7 @@ struct LineDetailView: View {
     
     let stations: [MetroStation]
     
-    private enum LineDetailTab { case map, works }
+    private enum LineDetailTab { case map, works, interchanges }
     @State private var selectedTab: LineDetailTab = .map
     
     private var centerIndex: Int { max(0, stations.count / 2) }
@@ -927,6 +927,28 @@ struct LineDetailView: View {
                             )
                             .foregroundStyle(selectedTab == .works ? ((lineName == "S19" || lineName == "S1" || lineName == "M1" || lineName == "M4") ? .white : Color(.systemBackground)) : .primary)
                     }
+                    Button(action: {
+                        let generator = UIImpactFeedbackGenerator(style: .light)
+                        generator.impactOccurred()
+                        withAnimation(.snappy) { selectedTab = .interchanges }
+                    }) {
+                        Text("Interscambi")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                ZStack {
+                                    if selectedTab == .interchanges {
+                                        Capsule().fill((lineName == "S12") ? .white : getColor(for: lineName))
+                                    } else {
+                                        Capsule().stroke(Color.secondary, lineWidth: 1)
+                                    }
+                                }
+                            )
+                            .foregroundStyle(selectedTab == .interchanges ? ((lineName == "S19" || lineName == "S1" || lineName == "M1" || lineName == "M4") ? .white : Color(.systemBackground)) : .primary)
+                    }
                 }
                 .padding(.horizontal)
                 .padding(.bottom, 8)
@@ -1022,7 +1044,32 @@ struct LineDetailView: View {
                         .mapStyle(.standard(elevation: .flat, pointsOfInterest: .excludingAll))
                         .ignoresSafeArea(edges: .bottom)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
-                } else {
+                } else if selectedTab == .works{
+                    VStack {
+                        ScrollView {
+                            let currentWorks = getCurrentWorks(line: lineName, viewModel: viewModel)
+                            if currentWorks.count > 0 {
+                                LazyVStack(spacing: 12) {
+                                    ForEach(currentWorks) { work in
+                                        let item = WorkItem(title: work.title, titleIcon: work.titleIcon, typeOfTransport: work.typeOfTransport, roads: work.roads, lines: work.lines, startDate: work.startDate, endDate: work.endDate, details: work.details, company: work.company)
+                                        WorkInProgressRow(item: item)
+                                            .padding(.horizontal)
+                                    }
+                                }
+                                .padding(.vertical, 8)
+                            } else {
+                                Text("Nessun lavoro attuale o programmato su questa linea.")
+                                    .padding()
+                                    .bold()
+                                    .font(.system(size: 15))
+                            }
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(maxHeight: .infinity)
+                    .padding(.bottom, 10)
+                }
+                else{
                     VStack {
                         ScrollView {
                             let currentWorks = getCurrentWorks(line: lineName, viewModel: viewModel)
