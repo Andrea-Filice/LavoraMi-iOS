@@ -3,7 +3,7 @@
 <div align="center">
 
 [![iOS](https://img.shields.io/badge/iOS-17%2B-blue.svg?style=flat)](https://developer.apple.com/ios/)
-[![Swift](https://img.shields.io/badge/Swift-5.0%2B-orange.svg?style=flat)](https://swift.org/)
+[![Swift](https://img.shields.io/badge/Swift-6.0%2B-orange.svg?style=flat)](https://swift.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat)](LICENSE)
 [![Repository](https://img.shields.io/badge/GitHub-LavoraMi--iOS-black?style=flat&logo=github)](https://github.com/Andrea-Filice/LavoraMi-iOS)
 
@@ -46,7 +46,7 @@ Perfetta per pendolari che desiderano rimanere sempre informati sulle interruzio
 - **Tab Navigation** - Navigazione intuitiva tra sezioni
   - 🏠 **Home** - Visualizzazione riepilogativa dei lavori
   - 🚇 **Linee** - Dettagli specifici per ogni linea di trasporto
-  - 📍 **Mappa** - Localizzazione geografica dei lavori
+  - ⚙️ **Impostazioni** - Localizzazione geografica dei lavori
 
 ### 🔔 Notifiche
 - Avvisi in tempo reale sullo stato dei lavori
@@ -58,11 +58,6 @@ Perfetta per pendolari che desiderano rimanere sempre informati sulle interruzio
 - Indicazione geografica delle stazioni interessate
 - Integrazione con MapKit di Apple
 
-### 💾 Persistenza dei Dati
-- Database locale per le informazioni dei lavori
-- Caching intelligente per migliori prestazioni
-- Sincronizzazione automatica dei dati
-
 ### 🎨 Design Moderno
 - Interfaccia nativa SwiftUI
 - Design responsivo e accessibility-focused
@@ -72,9 +67,9 @@ Perfetta per pendolari che desiderano rimanere sempre informati sulle interruzio
 
 ## 📋 Requisiti
 
-- **iOS** 14.0 o superiore
-- **Xcode** 13.0 o superiore
-- **Swift** 5.0 o superiore
+- **iOS** 17.0 o superiore
+- **Xcode** 26.0 o superiore
+- **Swift** 6.0 o superiore
 - **Dispositivo** iPhone o simulatore iOS
 
 ---
