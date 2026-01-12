@@ -686,21 +686,61 @@ struct LineRow: View {
     @ObservedObject var viewModel: WorkViewModel
     
     var body: some View {
-        NavigationLink(destination: LineDetailView(lineName: line, typeOfTransport: typeOfTransport, branches: branches, waitMinutes: waitMinutes, workScheduled: getWorkScheduled(line: line, viewModel: viewModel), workNow: getWorkNow(line: line, viewModel: viewModel), viewModel: viewModel, stations: stations)){
-            HStack(spacing: 12) {
-                Text(line)
-                    .foregroundStyle(.white)
-                    .font(.system(size: 12, weight: .bold))
-                    .padding(.vertical, 4)
-                    .padding(.horizontal, 8)
-                    .background(
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill((typeOfTransport == "Tram") ? .orange :getColor(for: line))
-                    )
-                
-                Text("\(typeOfTransport) \(line)")
+        if typeOfTransport != "Tram" && typeOfTransport != "Bus" {
+            NavigationLink(
+                destination: LineDetailView(
+                    lineName: line,
+                    typeOfTransport: typeOfTransport,
+                    branches: branches,
+                    waitMinutes: waitMinutes,
+                    workScheduled: getWorkScheduled(line: line, viewModel: viewModel),
+                    workNow: getWorkNow(line: line, viewModel: viewModel),
+                    viewModel: viewModel,
+                    stations: stations
+                )
+            ) {
+                HStack(spacing: 12) {
+                    Text(line)
+                        .foregroundStyle(.white)
+                        .font(.system(size: 12, weight: .bold))
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 8)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill((typeOfTransport == "Tram") ? .orange : getColor(for: line))
+                        )
+
+                    Text("\(typeOfTransport) \(line)")
+                }
+                .padding(.vertical, 4)
             }
-            .padding(.vertical, 4)
+        } else {
+            NavigationLink(
+                destination: LineSmallDetailedView(
+                    lineName: line,
+                    typeOfTransport: typeOfTransport,
+                    branches: branches,
+                    waitMinutes: waitMinutes,
+                    workScheduled: getWorkScheduled(line: line, viewModel: viewModel),
+                    workNow: getWorkNow(line: line, viewModel: viewModel),
+                    viewModel: viewModel
+                )
+            ) {
+                HStack(spacing: 12) {
+                    Text(line)
+                        .foregroundStyle(.white)
+                        .font(.system(size: 12, weight: .bold))
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 8)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill((typeOfTransport == "Tram") ? .orange : getColor(for: line))
+                        )
+
+                    Text("\(typeOfTransport) \(line)")
+                }
+                .padding(.vertical, 4)
+            }
         }
     }
 }
@@ -737,6 +777,28 @@ struct LinesView: View {
         ]
     }
     
+    var trams: [LineInfo] {
+        [
+            LineInfo(name: "1", branches: "Roserio - Centrale FS", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "2", branches: "P.Le Negrelli - P.Za Bausan", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "3", branches: "Duomo M1 M3 - Gratosoglio", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "4", branches: "Cairoli M1 - Niguarda (Parco Nord)", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "5", branches: "Niguarda (Ospedale) - Ortica", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "7", branches: "P.Le Lagosta - Q.Re Adriano", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "9", branches: "Centrale FS M2 M3 - P.Ta Genova M2", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "10", branches: "P.Za 24 Maggio - V.Le Lunigiana", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "12", branches: "P.Za Ovidio - Roserio (Ospedale Sacco)", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "14", branches: "Lorenteggio - Cimitero Maggiore", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "15", branches: "Duomo M1 M3 - Rozzano (Via G. Rossa)", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "16", branches: "San Siro Stadio M5 - Via Monte Velino", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "19", branches: "P.Za Castelli - Lambrate FS M2", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "24", branches: "Duomo M1 M3 - Vigentino", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "27", branches: "V.Le Ungheria - Duomo M1 M3", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "31", branches: "Bicocca M5 - Cinisello (1° Maggio)", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "33", branches: "P.Le Lagosta - Rimembranze di Lambrate", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+        ]
+    }
+    
     var body: some View {
         NavigationStack{
             List{
@@ -747,6 +809,11 @@ struct LinesView: View {
                 }
                 Section("Linee Suburbane"){
                     ForEach(suburban, id: \.id) { line in
+                        LineRow(line: line.name, typeOfTransport: line.type, branches: line.branches, waitMinutes: line.waitMinutes, stations: line.stations, viewModel: viewModel)
+                    }
+                }
+                Section("Linee Tramviarie"){
+                    ForEach(trams, id: \.id) { line in
                         LineRow(line: line.name, typeOfTransport: line.type, branches: line.branches, waitMinutes: line.waitMinutes, stations: line.stations, viewModel: viewModel)
                     }
                 }
@@ -1103,6 +1170,131 @@ struct LineDetailView: View {
     }
 }
 
+struct LineSmallDetailedView: View {
+    let lineName: String
+    let typeOfTransport: String
+    let branches: String
+    let waitMinutes: String
+    
+    let workScheduled: Int
+    let workNow: Int
+    let viewModel: WorkViewModel
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 20) {
+                    HStack(spacing: 12) {
+                        Text(lineName)
+                            .foregroundStyle(.white)
+                            .font(.system(size: 40, weight: .bold))
+                            .padding(.vertical, 4)
+                            .padding(.horizontal, 20)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill((typeOfTransport == "Tram") ? .orange : getColor(for: lineName))
+                            )
+                        
+                        Text("\(typeOfTransport) \(lineName)")
+                            .font(.system(size: 30))
+                            .minimumScaleFactor(0.5)
+                            .lineLimit(1)
+                    }
+                    
+                    Divider()
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("DIREZIONI:")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .bold()
+                        
+                        Text(branches)
+                            .font(.title3)
+                            .multilineTextAlignment(.leading)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("TEMPO DI ATTESA MEDIO:")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .bold()
+                        
+                        Text(waitMinutes)
+                            .font(.title3)
+                            .multilineTextAlignment(.leading)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("LAVORI SULLA LINEA:")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .bold()
+                        
+                        Text("\(workNow) attuali, \(workScheduled) programmati.")
+                            .font(.title3)
+                            .multilineTextAlignment(.leading)
+                    }
+                    
+                    Spacer()
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: .infinity)
+                .padding(.top, 20)
+                .background(Color(uiColor: .systemBackground))
+                HStack(spacing: 8) {
+                    Button(action: {
+                        let generator = UIImpactFeedbackGenerator(style: .light)
+                        generator.impactOccurred()
+                        
+                    }) {
+                        Text("Lavori linea")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                Capsule()
+                                    .fill(.orange)
+                            )
+                            .foregroundStyle(Color(.systemBackground)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+                }
+                VStack {
+                    ScrollView {
+                        let currentWorks = getCurrentWorks(line: lineName, viewModel: viewModel)
+                        if currentWorks.count > 0 {
+                            LazyVStack(spacing: 12) {
+                                ForEach(currentWorks) { work in
+                                    let item = WorkItem(title: work.title, titleIcon: work.titleIcon, typeOfTransport: work.typeOfTransport, roads: work.roads, lines: work.lines, startDate: work.startDate, endDate: work.endDate, details: work.details, company: work.company)
+                                    WorkInProgressRow(item: item)
+                                        .padding(.horizontal)
+                                }
+                            }
+                            .padding(.vertical, 8)
+                        } else {
+                            Text("Nessun lavoro attuale o programmato su questa linea.")
+                                .padding()
+                                .bold()
+                                .font(.system(size: 15))
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: .infinity)
+                .padding(.bottom, 10)
+            }
+            .navigationTitle("Dettagli Linea")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+}
+
 struct InterchangeView: View {
     let item: InterchageInfo
     let currentLine: String
@@ -1260,30 +1452,33 @@ extension Array: @retroactive RawRepresentable where Element == String {
 
 extension WorkItem {
     func matchesFavorites(_ favorites: [String]) -> Bool {
-            if favorites.contains("Tram") && self.typeOfTransport.lowercased().contains("tram") {
-                return true
-            }
-            if favorites.contains("Bus") && self.typeOfTransport.lowercased().contains("bus") {
-                return true
-            }
-            
-            for workLine in self.lines {
-                if favorites.contains(workLine) { return true }
-                if favorites.contains("S") && workLine.hasPrefix("S") {
-                    let suffix = workLine.dropFirst()
-                    if !suffix.isEmpty && suffix.allSatisfy({ $0.isNumber }) { return true }
-                }
-                
-                if favorites.contains("R") && workLine.hasPrefix("R") && !workLine.hasPrefix("RE") {
-                    return true
-                }
-                if favorites.contains("RE") && workLine.hasPrefix("RE") {
-                    return true
-                }
-            }
-            
-            return false
+        let transport = self.typeOfTransport.lowercased()
+
+        if favorites.contains("Tram") {
+            let isTram = transport.contains("tram") && !transport.contains("tram.fill.tunnel") && !transport.contains("metro")
+            if isTram { return true }
         }
+
+        if favorites.contains("Bus") && transport.contains("bus") {
+            return true
+        }
+
+        for workLine in self.lines {
+            if favorites.contains(workLine) { return true }
+            if favorites.contains("S") && workLine.hasPrefix("S") {
+                let suffix = workLine.dropFirst()
+                if !suffix.isEmpty && suffix.allSatisfy({ $0.isNumber }) { return true }
+            }
+            if favorites.contains("R") && workLine.hasPrefix("R") && !workLine.hasPrefix("RE") {
+                return true
+            }
+            if favorites.contains("RE") && workLine.hasPrefix("RE") {
+                return true
+            }
+        }
+
+        return false
+    }
 }
 
 // MARK: - Bundle version helpers
@@ -1302,3 +1497,4 @@ extension Bundle {
 #Preview {
     ContentView()
 }
+

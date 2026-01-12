@@ -50,10 +50,21 @@ class WorkViewModel: ObservableObject {
                     
                     let decodedItems = try decoder.decode([WorkItem].self, from: data)
                     self?.items = decodedItems
+
+                    let defaults = UserDefaults.standard
+                    var savedFavorites: [String] = []
                     
-                    if let savedFavoritesData = UserDefaults.standard.data(forKey: "linesFavorites"),
-                       let savedFavorites = try? JSONDecoder().decode([String].self, from: savedFavoritesData) {
-                        
+                    if let savedFavoritesData = defaults.data(forKey: "linesFavorites"),
+                       let decoded = try? JSONDecoder().decode([String].self, from: savedFavoritesData) {
+                        savedFavorites = decoded
+                    } else if let favoritesString = defaults.string(forKey: "linesFavorites"),
+                              let data = favoritesString.data(using: .utf8),
+                              let decoded = try? JSONDecoder().decode([String].self, from: data) {
+                        savedFavorites = decoded
+                    }
+                    
+                    let notificationsEnabled = (defaults.object(forKey: "enableNotifications") as? Bool) ?? true
+                    if notificationsEnabled {
                         NotificationManager.shared.syncNotifications(for: decodedItems, favorites: savedFavorites)
                     }
                 } catch {
