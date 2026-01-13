@@ -686,7 +686,7 @@ struct LineRow: View {
     @ObservedObject var viewModel: WorkViewModel
     
     var body: some View {
-        if typeOfTransport != "Tram" && typeOfTransport != "Bus" {
+        if typeOfTransport != "Tram" && typeOfTransport != "Movibus" {
             NavigationLink(
                 destination: LineDetailView(
                     lineName: line,
@@ -714,7 +714,7 @@ struct LineRow: View {
                 }
                 .padding(.vertical, 4)
             }
-        } else {
+        } else{
             NavigationLink(
                 destination: LineSmallDetailedView(
                     lineName: line,
@@ -799,6 +799,36 @@ struct LinesView: View {
         ]
     }
     
+    var bus : [LineInfo] {
+        [
+            LineInfo(name: "z601", branches: "Legnano - Rho - Milano Molino Dorino", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z602", branches: "Legnano - Milano Cadorna FN", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z603", branches: "Vittore Olona / Nerviano - Milano Cadorna FN", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z6C3", branches: "Vittore Olona - Cerro Maggiore - Milano Cadorna FN", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z606", branches: "Cerro Maggiore - Rho - Milano Molino Dorino", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z611", branches: "Legnano - Canegrate - Parabiago", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z612", branches: "Legnano - Cerro Maggiore - Arese", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z616", branches: "Pregnana Milanese - Rho", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z617", branches: "Origgio / Lainate - Milano Molino Dorino ", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z618", branches: "Vanzago - Pogliano M. - Rho", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z619", branches: "Pogliano M. - Plesso IST Maggiolini", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z620", branches: "Magenta - Vittuone - Milano Molino Dorino", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z621", branches: "Cuggiono - Ossona - Milano Molino Dorino", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z622", branches: "Cuggiono - Ossona - Cornaredo", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z625", branches: "Busto Arsizio - Busto Garolfo", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z627", branches: "Castano Primo - Legnano", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z636", branches: "Nosate - Legnano", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z641", branches: "Castano Primo - Magenta", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z642", branches: "Magenta - Legnano", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z643", branches: "Vittuone - Parabiago", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z644", branches: "Arconate - Parabiago", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z646", branches: "Magenta - Castano Primo", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z647", branches: "Cornaredo - Castano Primo", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z648", branches: "Arconate - Milano Molino Dorino", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z649", branches: "Magenta - Arluno - Milano Molino Dorino", type: "Movibus", waitMinutes: "", stations: [])
+        ]
+    }
+    
     var body: some View {
         NavigationStack{
             List{
@@ -815,6 +845,11 @@ struct LinesView: View {
                 Section("Linee Tramviarie"){
                     ForEach(trams, id: \.id) { line in
                         LineRow(line: line.name, typeOfTransport: line.type, branches: line.branches, waitMinutes: line.waitMinutes, stations: line.stations, viewModel: viewModel)
+                    }
+                }
+                Section("Linee di Bus"){
+                    ForEach(bus, id: \.id){bus in
+                        LineRow(line: bus.name, typeOfTransport: bus.type, branches: bus.branches, waitMinutes: bus.waitMinutes, stations: bus.stations, viewModel: viewModel)
                     }
                 }
             }
@@ -1213,15 +1248,250 @@ struct LineSmallDetailedView: View {
                             .multilineTextAlignment(.leading)
                     }
                     
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("TEMPO DI ATTESA MEDIO:")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .bold()
-                        
-                        Text(waitMinutes)
-                            .font(.title3)
-                            .multilineTextAlignment(.leading)
+                    if(!waitMinutes.isEmpty){
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("TEMPO DI ATTESA MEDIO:")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .bold()
+                            
+                            Text(waitMinutes)
+                                .font(.title3)
+                                .multilineTextAlignment(.leading)
+                        }
+                    }
+                    else {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("FERMATA DI INTERSCAMBIO:")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .bold()
+                            
+                            if(branches.contains("Molino Dorino")){
+                                Text("Molino Dorino MM")
+                                    .font(.title3)
+                                    .multilineTextAlignment(.leading)
+                                
+                                Text("M1")
+                                    .foregroundStyle(.white)
+                                    .font(.system(size: 20, weight: .bold))
+                                    .padding(.vertical, 4)
+                                    .padding(.horizontal, 20)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .fill(getColor(for: "M1"))
+                                    )
+                            }
+                            else if(branches.contains("Cadorna FN")){
+                                Text("Milano Cadorna FN")
+                                    .font(.title3)
+                                    .multilineTextAlignment(.leading)
+                                
+                                HStack{
+                                    Text("M1")
+                                        .foregroundStyle(.white)
+                                        .font(.system(size: 20, weight: .bold))
+                                        .padding(.vertical, 4)
+                                        .padding(.horizontal, 20)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .fill(getColor(for: "M1"))
+                                        )
+                                    Text("M2")
+                                        .foregroundStyle(.white)
+                                        .font(.system(size: 20, weight: .bold))
+                                        .padding(.vertical, 4)
+                                        .padding(.horizontal, 20)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .fill(getColor(for: "M2"))
+                                        )
+                                }
+                            }
+                            else if(branches.contains("Parabiago")){
+                                Text("Parabiago")
+                                    .font(.title3)
+                                    .multilineTextAlignment(.leading)
+                                
+                                HStack{
+                                    Text("z644")
+                                        .foregroundStyle(.white)
+                                        .font(.system(size: 20, weight: .bold))
+                                        .padding(.vertical, 4)
+                                        .padding(.horizontal, 20)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .fill(getColor(for: "z644"))
+                                        )
+                                    Text("z643")
+                                        .foregroundStyle(.white)
+                                        .font(.system(size: 20, weight: .bold))
+                                        .padding(.vertical, 4)
+                                        .padding(.horizontal, 20)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .fill(getColor(for: "z643"))
+                                        )
+                                }
+                            }
+                            else if(branches.contains("Rho")){
+                                Text("Rho")
+                                    .font(.title3)
+                                    .multilineTextAlignment(.leading)
+                                
+                                HStack{
+                                    Text("z616")
+                                        .foregroundStyle(.white)
+                                        .font(.system(size: 20, weight: .bold))
+                                        .padding(.vertical, 4)
+                                        .padding(.horizontal, 20)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .fill(getColor(for: "z616"))
+                                        )
+                                    Text("z618")
+                                        .foregroundStyle(.white)
+                                        .font(.system(size: 20, weight: .bold))
+                                        .padding(.vertical, 4)
+                                        .padding(.horizontal, 20)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .fill(getColor(for: "z618"))
+                                        )
+                                }
+                            }
+                            else if(branches.contains("Busto Garolfo")){
+                                Text("Busto Garolfo")
+                                    .font(.title3)
+                                    .multilineTextAlignment(.leading)
+                                
+                                ScrollView(.horizontal, showsIndicators: false){
+                                    HStack{
+                                        Text("z625")
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 20, weight: .bold))
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 20)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 6)
+                                                    .fill(getColor(for: "z"))
+                                            )
+                                        Text("z627")
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 20, weight: .bold))
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 20)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 6)
+                                                    .fill(getColor(for: "z"))
+                                            )
+                                        Text("z644")
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 20, weight: .bold))
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 20)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 6)
+                                                    .fill(getColor(for: "z"))
+                                            )
+                                        Text("z647")
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 20, weight: .bold))
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 20)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 6)
+                                                    .fill(getColor(for: "z"))
+                                            )
+                                        Text("z648")
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 20, weight: .bold))
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 20)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 6)
+                                                    .fill(getColor(for: "z"))
+                                            )
+                                        Text("z649")
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 20, weight: .bold))
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 20)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 6)
+                                                    .fill(getColor(for: "z"))
+                                            )
+                                    }
+                                }
+                            }
+                            else if(branches.contains("Legnano")){
+                                Text("Legnano")
+                                    .font(.title3)
+                                    .multilineTextAlignment(.leading)
+                                
+                                ScrollView(.horizontal, showsIndicators: false){
+                                    HStack{
+                                        Text("z602")
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 20, weight: .bold))
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 20)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 6)
+                                                    .fill(getColor(for: "z"))
+                                            )
+                                        Text("z612")
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 20, weight: .bold))
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 20)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 6)
+                                                    .fill(getColor(for: "z"))
+                                            )
+                                        Text("z601")
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 20, weight: .bold))
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 20)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 6)
+                                                    .fill(getColor(for: "z"))
+                                            )
+                                        Text("z611")
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 20, weight: .bold))
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 20)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 6)
+                                                    .fill(getColor(for: "z"))
+                                            )
+                                        Text("z642")
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 20, weight: .bold))
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 20)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 6)
+                                                    .fill(getColor(for: "z"))
+                                            )
+                                        Text("z627")
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 20, weight: .bold))
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 20)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 6)
+                                                    .fill(getColor(for: "z"))
+                                            )
+                                    }
+                                }
+                            }
+                            else{
+                                Text("Nessuna fermata di interscambio.")
+                            }
+                        }
                     }
                     
                     VStack(alignment: .leading, spacing: 5) {
@@ -1256,10 +1526,9 @@ struct LineSmallDetailedView: View {
                             .frame(maxWidth: .infinity)
                             .background(
                                 Capsule()
-                                    .fill(.orange)
+                                    .fill((waitMinutes.isEmpty) ? Color(red: 28/255, green: 28/255, blue: 1) : .orange)
                             )
-                            .foregroundStyle(Color(.systemBackground)
-                            )
+                            .foregroundStyle((waitMinutes.isEmpty) ? .white : Color(.systemBackground))
                     }
                     .buttonStyle(.plain)
                     .padding(.horizontal)
