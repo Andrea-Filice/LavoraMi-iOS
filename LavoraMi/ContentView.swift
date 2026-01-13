@@ -747,6 +747,45 @@ struct LineRow: View {
 
 struct LinesView: View {
     @ObservedObject var viewModel: WorkViewModel
+
+    @State private var searchInput: String = ""
+    @FocusState private var isSearchFocused: Bool
+
+    // MARK: - Search helpers
+    private func matches(_ line: LineInfo, query: String) -> Bool {
+        let q = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        if q.isEmpty { return true }
+        let typeKeywords: [String: [String]] = [
+            "Metro": ["metro", "metropolitana", "m"],
+            "Suburbano": ["suburbano", "s"],
+            "Tram": ["tram", "t"],
+            "Movibus": ["bus", "movibus", "z"]
+        ]
+        let name = line.name.lowercased()
+        let type = line.type.lowercased()
+        let tokens = q.split(whereSeparator: { $0.isWhitespace }).map { String($0) }
+        for token in tokens {
+            if name.contains(token) { continue }
+            if type.contains(token) { continue }
+            if let synonyms = typeKeywords[line.type]?.map({ $0.lowercased() }),
+               synonyms.contains(where: { token.hasPrefix($0) || $0.hasPrefix(token) }) {
+                continue
+            }
+            if token.allSatisfy({ $0.isNumber }) && name.contains(token) { continue }
+            return false
+        }
+        return true
+    }
+
+    private func filtered(_ items: [LineInfo]) -> [LineInfo] {
+        guard !searchInput.isEmpty else { return items }
+        return items.filter { matches($0, query: searchInput) }
+    }
+
+    var filteredMetros: [LineInfo] { filtered(metros) }
+    var filteredSuburban: [LineInfo] { filtered(suburban) }
+    var filteredTrams: [LineInfo] { filtered(trams) }
+    var filteredBus: [LineInfo] { filtered(bus) }
     
     var metros: [LineInfo] {
         [
@@ -831,24 +870,43 @@ struct LinesView: View {
     
     var body: some View {
         NavigationStack{
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(.gray)
+                TextField("Cerca per tipo o numero (es. M1, S5, Tram, Bus, z601)...", text: $searchInput)
+                    .foregroundColor(.primary)
+                    .autocorrectionDisabled(true)
+                    .focused($isSearchFocused)
+                    .submitLabel(.done)
+                
+                if !searchInput.isEmpty {
+                    Button(action: {
+                        searchInput = ""
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.gray)
+                    }
+                }
+            }
+            .padding()
             List{
                 Section("Linee Metropolitane"){
-                    ForEach(metros, id: \.id) { line in
+                    ForEach(filteredMetros, id: \.id) { line in
                         LineRow(line: line.name, typeOfTransport: line.type, branches: line.branches, waitMinutes: line.waitMinutes, stations: line.stations, viewModel: viewModel)
                     }
                 }
                 Section("Linee Suburbane"){
-                    ForEach(suburban, id: \.id) { line in
+                    ForEach(filteredSuburban, id: \.id) { line in
                         LineRow(line: line.name, typeOfTransport: line.type, branches: line.branches, waitMinutes: line.waitMinutes, stations: line.stations, viewModel: viewModel)
                     }
                 }
                 Section("Linee Tramviarie"){
-                    ForEach(trams, id: \.id) { line in
+                    ForEach(filteredTrams, id: \.id) { line in
                         LineRow(line: line.name, typeOfTransport: line.type, branches: line.branches, waitMinutes: line.waitMinutes, stations: line.stations, viewModel: viewModel)
                     }
                 }
                 Section("Linee di Bus"){
-                    ForEach(bus, id: \.id){bus in
+                    ForEach(filteredBus, id: \.id){bus in
                         LineRow(line: bus.name, typeOfTransport: bus.type, branches: bus.branches, waitMinutes: bus.waitMinutes, stations: bus.stations, viewModel: viewModel)
                     }
                 }
