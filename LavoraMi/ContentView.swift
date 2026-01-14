@@ -628,7 +628,7 @@ struct InfoView: View {
                         Label("Segnala un bug", systemImage: "ladybug.fill")
                             .font(.system(size: 20))
                     }
-                    .padding(.bottom, 10)
+                    .padding(.bottom, 20)
                     Spacer()
                 }
             }
@@ -686,7 +686,7 @@ struct LineRow: View {
     @ObservedObject var viewModel: WorkViewModel
     
     var body: some View {
-        if typeOfTransport != "Tram" && typeOfTransport != "Movibus" {
+        if typeOfTransport != "Tram" && typeOfTransport != "Movibus" && typeOfTransport != "STAV" {
             NavigationLink(
                 destination: LineDetailView(
                     lineName: line,
@@ -791,7 +791,9 @@ struct LinesView: View {
     var filteredMetros: [LineInfo] { filtered(metros) }
     var filteredSuburban: [LineInfo] { filtered(suburban) }
     var filteredTrams: [LineInfo] { filtered(trams) }
-    var filteredBus: [LineInfo] { filtered(bus) }
+    var filteredMovibus: [LineInfo] { filtered(bus) }
+    var filteredSTAV: [LineInfo] { filtered(stav) }
+    var filteredAutoguidovie: [LineInfo] { filtered(bus) }
     
     var metros: [LineInfo] {
         [
@@ -874,12 +876,28 @@ struct LinesView: View {
         ]
     }
     
+    var stav: [LineInfo] {
+        [
+            LineInfo(name: "z551", branches: "Abbiategrasso Vittorio Veneto - Milano Bisceglie", type: "STAV", waitMinutes: "", stations: []),
+            LineInfo(name: "z552", branches: "Abbiategrasso Vittorio Veneto - S. Stefano Ticino", type: "STAV", waitMinutes: "", stations: []),
+            LineInfo(name: "z553", branches: "Abbiategrasso - Rosate - Milano Romolo", type: "STAV", waitMinutes: "", stations: []),
+            LineInfo(name: "z554", branches: "Albairate - Albairate Vermezzo FS - Bubbiano", type: "STAV", waitMinutes: "", stations: []),
+            LineInfo(name: "z555", branches: "Abbiategrasso Vittorio Veneto - Binasco / Rosate", type: "STAV", waitMinutes: "", stations: []),
+            LineInfo(name: "z556", branches: "Abbiategrasso FS - Motta Visconti", type: "STAV", waitMinutes: "", stations: []),
+            LineInfo(name: "z557", branches: "Gaggiano De Gasperi - Gaggiano FS - San Vito", type: "STAV", waitMinutes: "", stations: []),
+            LineInfo(name: "z559", branches: "Abbiategrasso Stazione FS - Magenta FS", type: "STAV", waitMinutes: "", stations: []),
+            LineInfo(name: "z560", branches: "Abbiategrasso FS - Corsico - Milano Bisceglie", type: "STAV", waitMinutes: "", stations: []),
+        ]
+    }
+    
+    let busLine = ""
+    
     var body: some View {
         NavigationStack{
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.gray)
-                TextField("Cerca per tipo o numero (es. M1, S5, Tram, Bus, z601)...", text: $searchInput)
+                TextField("Cerca per tipo o numero...", text: $searchInput)
                     .foregroundColor(.primary)
                     .autocorrectionDisabled(true)
                     .focused($isSearchFocused)
@@ -911,10 +929,45 @@ struct LinesView: View {
                         LineRow(line: line.name, typeOfTransport: line.type, branches: line.branches, waitMinutes: line.waitMinutes, stations: line.stations, viewModel: viewModel)
                     }
                 }
-                Section("Linee di Bus"){
-                    ForEach(filteredBus, id: \.id){bus in
+                Section(){
+                    ForEach(filteredMovibus, id: \.id){bus in
                         LineRow(line: bus.name, typeOfTransport: bus.type, branches: bus.branches, waitMinutes: bus.waitMinutes, stations: bus.stations, viewModel: viewModel)
                     }
+                }
+                header: {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Linee di Bus")
+                            .font(.title3)
+                            .bold()
+                            .foregroundStyle(.primary)
+                            .textCase(nil)
+                        
+                        Text("Movibus")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .textCase(nil)
+                    }
+                    .padding(.bottom, 4)
+                }
+                Section(){
+                    ForEach(filteredSTAV, id: \.id){bus in
+                        LineRow(line: bus.name, typeOfTransport: bus.type, branches: bus.branches, waitMinutes: bus.waitMinutes, stations: bus.stations, viewModel: viewModel)
+                    }
+                }
+                header: {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Linee di Bus")
+                            .font(.title3)
+                            .bold()
+                            .foregroundStyle(.primary)
+                            .textCase(nil)
+                        
+                        Text("STAV")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .textCase(nil)
+                    }
+                    .padding(.bottom, 4)
                 }
             }
             .navigationTitle("Linee")
@@ -1279,6 +1332,23 @@ struct LineSmallDetailedView: View {
     let workNow: Int
     let viewModel: WorkViewModel
     
+    let interchanges: [InterchangeStation] = [
+        .init(key: "Molino Dorino", displayName: "Molino Dorino MM", lines: ["M1"]),
+        .init(key: "Cadorna FN", displayName: "Milano Cadorna FN", lines: ["M1", "M2"]),
+        .init(key: "Parabiago", displayName: "Parabiago", lines: ["z644", "z643"]),
+        .init(key: "Rho", displayName: "Rho", lines: ["z616", "z618"]),
+        .init(key: "Busto Garolfo", displayName: "Busto Garolfo", lines: ["z625", "z627", "z644", "z647", "z648", "z649"]),
+        .init(key: "Legnano", displayName: "Legnano", lines: ["z602", "z612", "z601", "z611", "z642", "z627"]),
+        .init(key: "Bisceglie", displayName: "Bisceglie MM", lines: ["M1", "z560"]),
+        .init(key: "Romolo", displayName: "Romolo FS", lines: ["M2", "S9", "S19", "R31"]),
+        .init(key: "S. Stefano Ticino", displayName: "Santo Stefano Ticino - Corbetta", lines: ["S6"]),
+        .init(key: "Magenta", displayName: "Magente FS", lines: ["S6", "RV"]),
+        .init(key: "Abbiategrasso Vittorio Veneto", displayName: "Abbiategrasso V. Veneto", lines: ["z551", "z552", "z553", "z555", "z556", "z560"])
+    ]
+    var activeInterchange: InterchangeStation? {
+        interchanges.first { branches.contains($0.key) }
+    }
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -1330,230 +1400,21 @@ struct LineSmallDetailedView: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .bold()
-                            
-                            if(branches.contains("Molino Dorino")){
-                                Text("Molino Dorino MM")
+                            if let station = activeInterchange {
+                                Text(station.displayName)
                                     .font(.title3)
                                     .multilineTextAlignment(.leading)
-                                
-                                Text("M1")
-                                    .foregroundStyle(.white)
-                                    .font(.system(size: 20, weight: .bold))
-                                    .padding(.vertical, 4)
-                                    .padding(.horizontal, 20)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 6)
-                                            .fill(getColor(for: "M1"))
-                                    )
-                            }
-                            else if(branches.contains("Cadorna FN")){
-                                Text("Milano Cadorna FN")
-                                    .font(.title3)
-                                    .multilineTextAlignment(.leading)
-                                
-                                HStack{
-                                    Text("M1")
-                                        .foregroundStyle(.white)
-                                        .font(.system(size: 20, weight: .bold))
-                                        .padding(.vertical, 4)
-                                        .padding(.horizontal, 20)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 6)
-                                                .fill(getColor(for: "M1"))
-                                        )
-                                    Text("M2")
-                                        .foregroundStyle(.white)
-                                        .font(.system(size: 20, weight: .bold))
-                                        .padding(.vertical, 4)
-                                        .padding(.horizontal, 20)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 6)
-                                                .fill(getColor(for: "M2"))
-                                        )
-                                }
-                            }
-                            else if(branches.contains("Parabiago")){
-                                Text("Parabiago")
-                                    .font(.title3)
-                                    .multilineTextAlignment(.leading)
-                                
-                                HStack{
-                                    Text("z644")
-                                        .foregroundStyle(.white)
-                                        .font(.system(size: 20, weight: .bold))
-                                        .padding(.vertical, 4)
-                                        .padding(.horizontal, 20)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 6)
-                                                .fill(getColor(for: "z644"))
-                                        )
-                                    Text("z643")
-                                        .foregroundStyle(.white)
-                                        .font(.system(size: 20, weight: .bold))
-                                        .padding(.vertical, 4)
-                                        .padding(.horizontal, 20)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 6)
-                                                .fill(getColor(for: "z643"))
-                                        )
-                                }
-                            }
-                            else if(branches.contains("Rho")){
-                                Text("Rho")
-                                    .font(.title3)
-                                    .multilineTextAlignment(.leading)
-                                
-                                HStack{
-                                    Text("z616")
-                                        .foregroundStyle(.white)
-                                        .font(.system(size: 20, weight: .bold))
-                                        .padding(.vertical, 4)
-                                        .padding(.horizontal, 20)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 6)
-                                                .fill(getColor(for: "z616"))
-                                        )
-                                    Text("z618")
-                                        .foregroundStyle(.white)
-                                        .font(.system(size: 20, weight: .bold))
-                                        .padding(.vertical, 4)
-                                        .padding(.horizontal, 20)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 6)
-                                                .fill(getColor(for: "z618"))
-                                        )
-                                }
-                            }
-                            else if(branches.contains("Busto Garolfo")){
-                                Text("Busto Garolfo")
-                                    .font(.title3)
-                                    .multilineTextAlignment(.leading)
-                                
-                                ScrollView(.horizontal, showsIndicators: false){
-                                    HStack{
-                                        Text("z625")
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 20, weight: .bold))
-                                            .padding(.vertical, 4)
-                                            .padding(.horizontal, 20)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 6)
-                                                    .fill(getColor(for: "z"))
-                                            )
-                                        Text("z627")
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 20, weight: .bold))
-                                            .padding(.vertical, 4)
-                                            .padding(.horizontal, 20)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 6)
-                                                    .fill(getColor(for: "z"))
-                                            )
-                                        Text("z644")
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 20, weight: .bold))
-                                            .padding(.vertical, 4)
-                                            .padding(.horizontal, 20)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 6)
-                                                    .fill(getColor(for: "z"))
-                                            )
-                                        Text("z647")
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 20, weight: .bold))
-                                            .padding(.vertical, 4)
-                                            .padding(.horizontal, 20)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 6)
-                                                    .fill(getColor(for: "z"))
-                                            )
-                                        Text("z648")
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 20, weight: .bold))
-                                            .padding(.vertical, 4)
-                                            .padding(.horizontal, 20)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 6)
-                                                    .fill(getColor(for: "z"))
-                                            )
-                                        Text("z649")
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 20, weight: .bold))
-                                            .padding(.vertical, 4)
-                                            .padding(.horizontal, 20)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 6)
-                                                    .fill(getColor(for: "z"))
-                                            )
+
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack {
+                                        ForEach(station.lines, id: \.self) { line in
+                                            TransportBadge(line: line)
+                                        }
                                     }
                                 }
-                            }
-                            else if(branches.contains("Legnano")){
-                                Text("Legnano")
-                                    .font(.title3)
-                                    .multilineTextAlignment(.leading)
-                                
-                                ScrollView(.horizontal, showsIndicators: false){
-                                    HStack{
-                                        Text("z602")
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 20, weight: .bold))
-                                            .padding(.vertical, 4)
-                                            .padding(.horizontal, 20)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 6)
-                                                    .fill(getColor(for: "z"))
-                                            )
-                                        Text("z612")
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 20, weight: .bold))
-                                            .padding(.vertical, 4)
-                                            .padding(.horizontal, 20)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 6)
-                                                    .fill(getColor(for: "z"))
-                                            )
-                                        Text("z601")
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 20, weight: .bold))
-                                            .padding(.vertical, 4)
-                                            .padding(.horizontal, 20)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 6)
-                                                    .fill(getColor(for: "z"))
-                                            )
-                                        Text("z611")
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 20, weight: .bold))
-                                            .padding(.vertical, 4)
-                                            .padding(.horizontal, 20)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 6)
-                                                    .fill(getColor(for: "z"))
-                                            )
-                                        Text("z642")
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 20, weight: .bold))
-                                            .padding(.vertical, 4)
-                                            .padding(.horizontal, 20)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 6)
-                                                    .fill(getColor(for: "z"))
-                                            )
-                                        Text("z627")
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 20, weight: .bold))
-                                            .padding(.vertical, 4)
-                                            .padding(.horizontal, 20)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 6)
-                                                    .fill(getColor(for: "z"))
-                                            )
-                                    }
-                                }
-                            }
-                            else{
+                            } else {
                                 Text("Nessuna fermata di interscambio.")
+                                    .foregroundColor(.secondary)
                             }
                         }
                     }
@@ -1673,6 +1534,28 @@ struct InterchangeView: View {
     }
 }
 
+struct TransportBadge: View {
+    let line: String
+    private var badgeColor: Color {
+        if line.starts(with: "z") {
+            return getColor(for: "z")
+        }
+        return getColor(for: line)
+    }
+
+    var body: some View {
+        Text(line)
+            .foregroundStyle(.white)
+            .font(.system(size: 20, weight: .bold))
+            .padding(.vertical, 4)
+            .padding(.horizontal, 20)
+            .background(
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(badgeColor)
+            )
+    }
+}
+
 //NOTE: FILTERS
 enum FilterBy: String, CaseIterable, Identifiable {
     case all = "Tutti"
@@ -1712,6 +1595,13 @@ struct MetroStation: Identifiable {
     let name: String
     let coordinate: CLLocationCoordinate2D
     let branch: String
+}
+
+struct InterchangeStation: Identifiable {
+    let id = UUID()
+    let key: String
+    let displayName: String
+    let lines: [String]
 }
 
 func getColor(for line: String) -> Color {
