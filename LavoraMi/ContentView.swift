@@ -796,6 +796,7 @@ struct LinesView: View {
     var filteredMovibus: [LineInfo] { filtered(bus) }
     var filteredSTAV: [LineInfo] { filtered(stav) }
     var filteredAutoguidovie: [LineInfo] { filtered(autoguidovie) }
+    var filteredUrbano: [LineInfo] { filtered(urbanoPavia) }
     
     var metros: [LineInfo] {
         [
@@ -947,7 +948,11 @@ struct LinesView: View {
             LineInfo(name: "k601", branches: "Crema - Soncino", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "k208", branches: "Cremona - S.Daniele - Casalmaggiore", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "k214", branches: "Cremona - Pieve d'Olmi - Viadana", type: "Autoguidovie", waitMinutes: "", stations: []),
-
+        ]
+    }
+    
+    var urbanoPavia: [LineInfo] {
+        [
             // MARK: - Area Pavia (Urbano ed Extraurbano)
             LineInfo(name: "P1", branches: "Montemontanino - S.Genesio - C.na Pelizza (Urbano PV)", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "P2", branches: "Vallisneri - Pavia FS - Cravino (Urbano PV)", type: "Autoguidovie", waitMinutes: "", stations: []),
@@ -1156,6 +1161,35 @@ struct LinesView: View {
                         Spacer()
                         Button(action: {
                             selectedURL = URL(string: "https://autoguidovie.it/it/avvisi")!
+                        }) {
+                            Image(systemName: "info.circle.fill")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                }
+                Section(){
+                    ForEach(filteredUrbano, id: \.id){bus in
+                        LineRow(line: bus.name, typeOfTransport: bus.type, branches: bus.branches, waitMinutes: bus.waitMinutes, stations: bus.stations, viewModel: viewModel)
+                    }
+                }
+                header: {
+                    HStack{
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Linee di Bus")
+                                .font(.title3)
+                                .bold()
+                                .foregroundStyle(.primary)
+                                .textCase(nil)
+                            
+                            Text("Urbano di Pavia")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .textCase(nil)
+                        }
+                        .padding(.bottom, 4)
+                        Spacer()
+                        Button(action: {
+                            selectedURL = URL(string: "https://pavia.autoguidovie.it/it/l/news/index")!
                         }) {
                             Image(systemName: "info.circle.fill")
                                 .foregroundColor(.gray)
