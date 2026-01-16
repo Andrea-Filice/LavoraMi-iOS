@@ -912,7 +912,6 @@ struct LinesView: View {
             LineInfo(name: "z419", branches: "Paullo - Melzo - Gorgonzola", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "z420", branches: "S.Zenone al L. - Melegnano - S.Donato M3", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "z431", branches: "Melegnano - Vizzolo P. - Carpiano - Locate T.", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z432", branches: "Melegnano - Cerro al L. - S.Donato M3", type: "Autoguidovie", waitMinutes: "", stations: []),
 
             // MARK: - Area Monza e Brianza
             LineInfo(name: "z219", branches: "Paderno D. - Nova M. - Cinisello B. - Monza", type: "Autoguidovie", waitMinutes: "", stations: []),
@@ -1578,7 +1577,7 @@ struct LineSmallDetailedView: View {
         .init(key: "Gorgonzola", displayName: "Gorgonzola MM", lines: ["M2", "z401", "z403"], typeOfInterchange: "tram.fill.tunnel"),
         .init(key: "Cernusco", displayName: "Cernusco sul Naviglio MM", lines: ["M2"], typeOfInterchange: "tram.fill.tunnel"),
         .init(key: "Gessate", displayName: "Gessate MM", lines: ["M2", "z404", "z405", "z406", "z407"], typeOfInterchange: "tram.fill.tunnel"),
-        .init(key: "Donato", displayName: "San Donato MM", lines: ["M3", "z411", "z412", "z413", "z415", "z420", "z432", "k501", "k502", "k511", "k512", "k521", "k522", "k523", "k524", "k525"], typeOfInterchange: "tram.fill.tunnel"),
+        .init(key: "Donato", displayName: "San Donato MM", lines: ["M3", "z411", "z412", "z413", "z415", "z420", "k501", "k502", "k511", "k512", "k521", "k522", "k523", "k524", "k525"], typeOfInterchange: "tram.fill.tunnel"),
         .init(key: "Sesto", displayName: "Sesto San Giovanni FS", lines: ["M1", "R13", "R14", "RE8", "S7", "S8", "S9", "S11", "z221", "z222", "z225", "z227"], typeOfInterchange: "train.side.front.car"),
         .init(key: "Monza FS", displayName: "Monza FS", lines: ["R13", "R14", "RE8", "RE80", "S7", "S8", "S9", "S11", "z228"], typeOfInterchange: "train.side.front.car"),
         .init(key: "Seregno FS", displayName: "Seregno FS", lines: ["RE80", "S9", "S11", "z228", "z231", "z233"], typeOfInterchange: "train.side.front.car"),
