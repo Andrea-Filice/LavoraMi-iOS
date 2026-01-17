@@ -36,8 +36,9 @@ jobs:
         run: |
           xcodebuild -project LavoraMi.xcodeproj \
            -scheme LavoraMi \
-           -configuration Release \
+           -configuration Debug \
            -destination "platform=iOS Simulator,name=iPhone 16,OS=latest" \
+           -jobs 4\
            build
 
       - name: Perform CodeQL Analysis
