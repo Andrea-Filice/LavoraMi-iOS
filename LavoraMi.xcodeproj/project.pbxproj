@@ -45,6 +45,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		656CF4BD2F1CF244002160CE /* Exceptions for "LavoraMiWidget" folder in "LavoraMi" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				LavoraMiWidget.swift,
+			);
+			target = 65101F592F0BF3EF0078A19C /* LavoraMi */;
+		};
 		6582F31E2F1BD9F300F7ADAF /* Exceptions for "LavoraMiWidget" folder in "LavoraMiWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -55,7 +62,11 @@
 		6582F3292F1BEB6100F7ADAF /* Exceptions for "LavoraMi" folder in "LavoraMiWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				ContentView.swift,
+				NotificationManager.swift,
 				SharedData.swift,
+				StationsDB.swift,
+				WorkViewModel.swift,
 			);
 			target = 6582F30A2F1BD9F000F7ADAF /* LavoraMiWidgetExtension */;
 		};
@@ -73,6 +84,7 @@
 		6582F3112F1BD9F100F7ADAF /* LavoraMiWidget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				656CF4BD2F1CF244002160CE /* Exceptions for "LavoraMiWidget" folder in "LavoraMi" target */,
 				6582F31E2F1BD9F300F7ADAF /* Exceptions for "LavoraMiWidget" folder in "LavoraMiWidgetExtension" target */,
 			);
 			path = LavoraMiWidget;

@@ -1436,7 +1436,7 @@ struct LineDetailView: View {
                         Button(action: {
                             if(selectedWidgetLine == lineName) {
                                 selectedWidgetLine = ""
-                                DataManager.shared.setSavedLine(SavedLine.empty)
+                                DataManager.shared.deleteSavedLine()
                             }
                             else {
                                 DataManager.shared.setSavedLine(SavedLine(id: lineName, name: lineName, longName: typeOfTransport, worksNow: workNow, worksScheduled: workScheduled))
@@ -1785,7 +1785,7 @@ struct LineSmallDetailedView: View {
                         Button(action: {
                             if(selectedWidgetLine == lineName) {
                                 selectedWidgetLine = ""
-                                DataManager.shared.setSavedLine(SavedLine.empty)
+                                DataManager.shared.deleteSavedLine()
                             }
                             else {
                                 DataManager.shared.setSavedLine(SavedLine(id: lineName, name: lineName, longName: typeOfTransport, worksNow: workNow, worksScheduled: workScheduled))

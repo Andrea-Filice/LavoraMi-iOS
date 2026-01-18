@@ -7,7 +7,6 @@
 
 import Foundation
 import WidgetKit
-import SwiftUI
 
 struct SavedLine: Identifiable, Codable, Equatable {
     let id: String
@@ -19,35 +18,28 @@ struct SavedLine: Identifiable, Codable, Equatable {
     static let empty = SavedLine(id: "empty", name: "empty", longName: "", worksNow: 0, worksScheduled: 0)
 }
 
-class DataManager {
+final class DataManager {
     static let shared = DataManager()
+    private let groupName = "group.com.andreafilice.lavorami"
+    private let key = "favouriteLine"
     
-    @AppStorage("favouriteLine", store: UserDefaults(suiteName: "group.com.andreafilice.lavorami"))
-    private var savedLineData: Data = Data()
-    
+    private let defaults = UserDefaults(suiteName: "group.com.andreafilice.lavorami")
+
     func setSavedLine(_ line: SavedLine) {
-        guard let encoded = try? JSONEncoder().encode(line) else {
-            return
+        if let encoded = try? JSONEncoder().encode(line) {
+            defaults?.set(encoded, forKey: key)
+            defaults?.synchronize()
+            WidgetCenter.shared.reloadAllTimelines()
         }
-        
-        savedLineData = encoded
-        WidgetCenter.shared.reloadAllTimelines()
     }
     
     func getSavedLine() -> SavedLine? {
-        guard !savedLineData.isEmpty else {
-            return nil
-        }
-        
-        do {
-            let line = try JSONDecoder().decode(SavedLine.self, from: savedLineData)
-            return line
-        } catch {
-            return nil
-        }
+        defaults?.synchronize()
+        guard let data = defaults?.data(forKey: key) else { return nil }
+        return try? JSONDecoder().decode(SavedLine.self, from: data)
     }
     
     func deleteSavedLine() {
-        savedLineData = Data()
+        setSavedLine(.empty)
     }
 }
