@@ -2094,7 +2094,9 @@ func getColor(for line: String) -> Color {
         case "Aereoporto": return .black
         case _ where line.contains("R"):
                 return Color.blue
-            
+        case let s where (1...33).contains(Int(s) ?? 0):
+            return .orange
+        
         default: return Color.gray
     }
 }

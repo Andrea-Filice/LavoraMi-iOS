@@ -143,7 +143,7 @@ struct LavoraMiWidgetEntryView : View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(getColor(for: entry.linea?.name ?? "no"))
+                        .background(getColor(for: entry.linea?.name ?? ""))
                         .cornerRadius(6)
                     
                     Spacer()
@@ -151,7 +151,7 @@ struct LavoraMiWidgetEntryView : View {
                     Image(systemName: entry.linea?.iconTransport ?? "tram.fill")
                         .foregroundColor(.secondary)
                 }
-                Text("\(entry.linea?.longName ?? "") \(entry.linea?.name ?? "no")")
+                Text("\(entry.linea?.longName ?? "") \(entry.linea?.name ?? "")")
                     .bold()
                     .font(.system(size: 15))
                 Divider()
