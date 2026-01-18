@@ -50,7 +50,7 @@ struct Provider: TimelineProvider {
                 )
                 
                 let entry = WorkEntry(date: Date(), linea: updatedLine, stato: "def")
-                let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
+                let nextUpdate = Calendar.current.date(byAdding: .hour, value: 12, to: Date())!
                 let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
                 
                 completion(timeline)
@@ -65,16 +65,74 @@ struct Provider: TimelineProvider {
 
 struct LavoraMiWidgetEntryView : View {
     var entry: Provider.Entry
+    @Environment(\.widgetFamily) var family
     
     var body: some View {
         if(entry.stato == "empty") {
-            VStack(alignment: .leading) {
-                Text("Seleziona una linea da mostrare nel Widget.")
+            VStack(alignment: .leading, spacing: 12) {
+                HStack{
+                    if(family == .systemSmall){
+                        Text("M1")
+                            .font(.system(size: 16, weight: .black))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(getColor(for: "M1"))
+                            .cornerRadius(6)
+                        Text("S5")
+                            .font(.system(size: 16, weight: .black))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(getColor(for: "S5"))
+                            .cornerRadius(6)
+                    }
+                    else if (family == .systemMedium){
+                        Text("M1")
+                            .font(.system(size: 16, weight: .black))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(getColor(for: "M1"))
+                            .cornerRadius(6)
+                        Text("S5")
+                            .font(.system(size: 16, weight: .black))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(getColor(for: "S5"))
+                            .cornerRadius(6)
+                        Text("M3")
+                            .font(.system(size: 16, weight: .black))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(getColor(for: "M3"))
+                            .cornerRadius(6)
+                        
+                        Text("S2")
+                            .font(.system(size: 16, weight: .black))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(getColor(for: "S2"))
+                            .cornerRadius(6)
+                        
+                        Text("z620")
+                            .font(.system(size: 16, weight: .black))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(getColor(for: "z620"))
+                            .cornerRadius(6)
+                    }
+                }
+                Text("Seleziona una linea in app da mostrare nel Widget.")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
             .padding()
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
         else{
             VStack(alignment: .leading, spacing: 8) {
@@ -140,6 +198,7 @@ struct LavoraMiWidget: Widget {
         }
         .configurationDisplayName("Stato Linea")
         .description("Mostra lo stato della linea selezionata.")
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
 
@@ -171,13 +230,13 @@ class WidgetNetworkManager {
             return (activeWorks.count, scheduledWorks.count)
             
         } catch {
-            print("Errore decodifica Widget: \(error)")
+            print("Errore Widget: \(error)")
             return (0, 0)
         }
     }
 }
 
-#Preview(as: .systemSmall) {
+#Preview(as: .systemMedium) {
     LavoraMiWidget()
 } timeline: {
     WorkEntry(date: Date(), linea: SavedLine(id: "M1", name: "M1", longName: "Metro", worksNow: 1, worksScheduled: 2), stato: "empty")
