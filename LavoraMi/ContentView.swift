@@ -516,7 +516,7 @@ struct SettingsView: View{
                     }
                 }
                 Section("Generali"){
-                    Toggle(isOn: $enableNotifications){
+                    NavigationLink(destination: NotificationsView(viewModel: viewModel)){
                         Label("Notifiche", systemImage: "bell.fill")
                     }
                     Picker(selection: $preferredFilter){
@@ -571,6 +571,60 @@ struct SettingsView: View{
             } message: {
                 Text("Sei sicuro di voler ripristinare le impostazioni?")
             }
+        }
+    }
+}
+
+struct NotificationsView: View {
+    @AppStorage("workScheduledNotifications") var workScheduledNotifications: Bool = true
+    @AppStorage("workInProgressNotifications") var workInProgressNotifications: Bool = true
+    @AppStorage("strikeNotifications") var strikeNotifications: Bool = true
+    @AppStorage("enableNotifications") var enableNotifications: Bool = true
+    @ObservedObject var viewModel: WorkViewModel
+    
+    var body: some View {
+        NavigationStack{
+            Spacer()
+            List {
+                Section(footer: Text("Imposta tutte le notifiche su uno stato.")){
+                    Toggle(isOn: $enableNotifications){
+                        Label("Notifiche", systemImage: "bell.fill")
+                    }
+                    .onChange(of: enableNotifications){
+                        workScheduledNotifications = enableNotifications
+                        workInProgressNotifications = enableNotifications
+                        strikeNotifications = enableNotifications
+                        
+                        if(enableNotifications){
+                            for item in viewModel.items {
+                                NotificationManager.shared.scheduleWorkAlerts(for: item)
+                            }
+                        }
+                        else{
+                            for item in viewModel.items {
+                                NotificationManager.shared.removeWorkAlerts(for: item)
+                            }
+                        }
+                    }
+                }
+                Section("Notifiche Lavori") {
+                    Toggle(isOn: $workScheduledNotifications){
+                        Label("Notifiche Inizio Lavori", systemImage: "bell.badge.fill")
+                    }
+                    .disabled(!enableNotifications)
+                    Toggle(isOn: $workInProgressNotifications){
+                        Label("Notifiche Fine Lavori", systemImage: "bell.badge.fill")
+                    }
+                    .disabled(!enableNotifications)
+                }
+                Section("Notifiche Scioperi"){
+                    Toggle(isOn: $strikeNotifications){
+                        Label("Notifiche Scioperi", systemImage: "bell.badge.waveform.fill")
+                    }
+                    .disabled(!enableNotifications)
+                }
+            }
+            .navigationTitle("Notifiche")
         }
     }
 }

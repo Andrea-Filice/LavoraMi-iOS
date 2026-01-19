@@ -7,8 +7,13 @@
 
 import UserNotifications
 import UIKit
+import SwiftUI
 
 class NotificationManager {
+    @AppStorage("workScheduledNotifications") var workScheduledNotifications: Bool = true
+    @AppStorage("workInProgressNotifications") var workInProgressNotifications: Bool = true
+    @AppStorage("strikeNotifications") var strikeNotifications: Bool = true
+    @AppStorage("enableNotifications") var enableNotifications: Bool = true
     static let shared = NotificationManager()
     
     func requestPermission() {
@@ -66,7 +71,7 @@ class NotificationManager {
         }
         
         //WORK STARTED
-        scheduleWorksBefore(for: work)
+        if(workScheduledNotifications){scheduleWorksBefore(for: work)}
     }
     
     func scheduleWorksBefore(for work: WorkItem){
@@ -85,12 +90,12 @@ class NotificationManager {
         
         if let dateOf = calendar.date(from: dateComponents), dateOf > Date() {
             let triggerDayOf = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-            let requestDayOf = UNNotificationRequest(identifier: "\(work.id.uuidString)_END", content: contentDayOf, trigger: triggerDayOf)
+            let requestDayOf = UNNotificationRequest(identifier: "\(work.id.uuidString)_START", content: contentDayOf, trigger: triggerDayOf)
             center.add(requestDayOf)
             print("Notifica PREAVVISO NUOVO LAVORO: \(dateOf.formatted())")
         }
         
-        if let dayBeforeDate = calendar.date(byAdding: .day, value: -1, to: work.endDate) {
+        if let dayBeforeDate = calendar.date(byAdding: .day, value: -1, to: work.startDate) {
             
             var dayBeforeComponents = calendar.dateComponents([.year, .month, .day, .hour], from: dayBeforeDate)
             let notificationHour = dayBeforeComponents.hour ?? 0
@@ -106,7 +111,7 @@ class NotificationManager {
                 contentDayBefore.sound = .default
                 
                 let triggerDayBefore = UNCalendarNotificationTrigger(dateMatching: dayBeforeComponents, repeats: false)
-                let requestDayBefore = UNNotificationRequest(identifier: "\(work.id.uuidString)_PRE", content: contentDayBefore, trigger: triggerDayBefore)
+                let requestDayBefore = UNNotificationRequest(identifier: "\(work.id.uuidString)_PRESTART", content: contentDayBefore, trigger: triggerDayBefore)
                 center.add(requestDayBefore)
                 print("Notifica programmata per il preavviso: \(String(describing: debugDate?.formatted()))")
             }
@@ -115,7 +120,7 @@ class NotificationManager {
     
     func removeWorkAlerts(for work: WorkItem) {
         let center = UNUserNotificationCenter.current()
-        let identifiers = ["\(work.id.uuidString)_END", "\(work.id.uuidString)_PRE"]
+        let identifiers = ["\(work.id.uuidString)_END", "\(work.id.uuidString)_PRE", "\(work.id.uuidString)_START", "\(work.id.uuidString)_PRESTART"]
         center.removePendingNotificationRequests(withIdentifiers: identifiers)
         print("Notifiche rimosse per: \(work.title)")
     }
@@ -123,11 +128,17 @@ class NotificationManager {
     func syncNotifications(for works: [WorkItem], favorites: [String]) {
         _ = UNUserNotificationCenter.current()
         for work in works {
+            
             if work.matchesFavorites(favorites) {
-                scheduleWorkAlerts(for: work)
-                print("Attivata notifica per: \(work.title) (Match preferiti)")
-            } else {
-                removeWorkAlerts(for: work)
+                if(workInProgressNotifications){
+                    scheduleWorkAlerts(for: work)
+                    print("Attivata notifica per fine lavori: \(work.title) (Match preferiti)")
+                }
+                if (workScheduledNotifications){
+                    scheduleWorksBefore(for: work)
+                    print("Attivata notifica per inizio lavori: \(work.title)")
+                }
+                else{removeWorkAlerts(for: work)}
             }
         }
     }
