@@ -22,6 +22,7 @@ class NotificationManager {
     }
     
     func scheduleWorkAlerts(for work: WorkItem) {
+        //WORK ENDED
         let center = UNUserNotificationCenter.current()
         let calendar = Calendar.current
         
@@ -55,6 +56,53 @@ class NotificationManager {
                 let contentDayBefore = UNMutableNotificationContent()
                 contentDayBefore.title = "⚠️ I lavori finiscono domani!"
                 contentDayBefore.body = "Domani terminano i lavori in \(work.roads) per \(work.lines.joined(separator: ", ")). Consulta il sito di \(work.company) per maggiori info."
+                contentDayBefore.sound = .default
+                
+                let triggerDayBefore = UNCalendarNotificationTrigger(dateMatching: dayBeforeComponents, repeats: false)
+                let requestDayBefore = UNNotificationRequest(identifier: "\(work.id.uuidString)_PRE", content: contentDayBefore, trigger: triggerDayBefore)
+                center.add(requestDayBefore)
+                print("Notifica programmata per il preavviso: \(String(describing: debugDate?.formatted()))")
+            }
+        }
+        
+        //WORK STARTED
+        scheduleWorksBefore(for: work)
+    }
+    
+    func scheduleWorksBefore(for work: WorkItem){
+        let center = UNUserNotificationCenter.current()
+        let calendar = Calendar.current
+        
+        var dateComponents = calendar.dateComponents([.year, .month, .day, .hour], from: work.startDate)
+        let notificationHour = dateComponents.hour ?? 0
+        dateComponents.hour = (notificationHour >= 0 && notificationHour <= 10) ? 10 : dateComponents.hour
+        dateComponents.minute = 0
+        
+        let contentDayOf = UNMutableNotificationContent()
+        contentDayOf.title = "Lavori Iniziati!"
+        contentDayOf.body = "I lavori in \(work.roads) delle linee \(work.lines.joined(separator: ", ")) sono iniziati oggi. Consulta il sito di \(work.company) per maggiori info."
+        contentDayOf.sound = .default
+        
+        if let dateOf = calendar.date(from: dateComponents), dateOf > Date() {
+            let triggerDayOf = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            let requestDayOf = UNNotificationRequest(identifier: "\(work.id.uuidString)_END", content: contentDayOf, trigger: triggerDayOf)
+            center.add(requestDayOf)
+            print("Notifica PREAVVISO NUOVO LAVORO: \(dateOf.formatted())")
+        }
+        
+        if let dayBeforeDate = calendar.date(byAdding: .day, value: -1, to: work.endDate) {
+            
+            var dayBeforeComponents = calendar.dateComponents([.year, .month, .day, .hour], from: dayBeforeDate)
+            let notificationHour = dayBeforeComponents.hour ?? 0
+            dayBeforeComponents.hour = (notificationHour >= 0 && notificationHour <= 10) ? 10 : dayBeforeComponents.hour
+            dayBeforeComponents.minute = 0
+            
+            let debugDate = calendar.date(from: dayBeforeComponents)
+            
+            if dayBeforeDate > Date() {
+                let contentDayBefore = UNMutableNotificationContent()
+                contentDayBefore.title = "⚠️ I lavori iniziano domani!"
+                contentDayBefore.body = "Domani iniziano i lavori in \(work.roads) per \(work.lines.joined(separator: ", ")). Consulta il sito di \(work.company) per maggiori info."
                 contentDayBefore.sound = .default
                 
                 let triggerDayBefore = UNCalendarNotificationTrigger(dateMatching: dayBeforeComponents, repeats: false)
