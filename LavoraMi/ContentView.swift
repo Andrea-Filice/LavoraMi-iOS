@@ -852,26 +852,44 @@ struct NotificationsView: View {
     @ObservedObject var viewModel: WorkViewModel
     
     var body: some View {
-        NavigationStack{
-            Spacer()
-            List {
-                Section(footer: Text("Imposta tutte le notifiche su uno stato.")){
-                    Toggle(isOn: $enableNotifications){
-                        Label("Notifiche", systemImage: "bell.fill")
-                    }
-                    .onChange(of: enableNotifications){
-                        workScheduledNotifications = enableNotifications
-                        workInProgressNotifications = enableNotifications
-                        strikeNotifications = enableNotifications
-                        print("-- INIZIO SYNCH DELLE NOTIFICHE --")
-                        
-                        //SYNC NOTIFICATIONS
-                        viewModel.fetchVariables() //SYNC STRIKES NOTIFICATIONS
-                        NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
+        VStack(spacing: 10) {
+            VStack(alignment: .leading, spacing: 8) {
+                Toggle(isOn: $enableNotifications) {
+                    HStack (spacing: 15){
+                        Image(systemName: "bell.fill")
+                            .foregroundStyle(.red)
+                            .scaleEffect(1.5)
+                        Text("Notifiche")
+                            .font(.system(size: 20))
+                            .bold()
                     }
                 }
+                .tint(.red)
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(12)
+                
+                Text("Imposta tutte le notifiche su uno stato.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal)
+            }
+            .padding(.top, 40)
+            .padding(.horizontal)
+            .onChange(of: enableNotifications) { newValue in
+                workScheduledNotifications = enableNotifications
+                workInProgressNotifications = enableNotifications
+                strikeNotifications = enableNotifications
+                print("-- INIZIO SYNCH DELLE NOTIFICHE --")
+                
+                //SYNC NOTIFICATIONS
+                viewModel.fetchVariables() //SYNC STRIKES NOTIFICATIONS
+                NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
+            }
+
+            List {
                 Section("Notifiche Lavori") {
-                    Toggle(isOn: $workScheduledNotifications){
+                    Toggle(isOn: $workScheduledNotifications) {
                         Label("Notifiche Inizio Lavori", systemImage: "bell.badge.fill")
                     }
                     .onChange(of: workScheduledNotifications){
@@ -879,7 +897,8 @@ struct NotificationsView: View {
                         print("-- INIZIO SYNCH NOTIFICHE IN PROGRESS --")
                     }
                     .disabled(!enableNotifications)
-                    Toggle(isOn: $workInProgressNotifications){
+                    
+                    Toggle(isOn: $workInProgressNotifications) {
                         Label("Notifiche Fine Lavori", systemImage: "bell.badge.fill")
                     }
                     .onChange(of: workInProgressNotifications){
@@ -888,8 +907,9 @@ struct NotificationsView: View {
                     }
                     .disabled(!enableNotifications)
                 }
-                Section("Notifiche Scioperi"){
-                    Toggle(isOn: $strikeNotifications){
+                
+                Section("Notifiche Scioperi") {
+                    Toggle(isOn: $strikeNotifications) {
                         Label("Notifiche Scioperi", systemImage: "bell.badge.waveform.fill")
                     }
                     .onChange(of: strikeNotifications){
@@ -899,8 +919,12 @@ struct NotificationsView: View {
                     .disabled(!enableNotifications)
                 }
             }
-            .navigationTitle("Notifiche")
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
         }
+        .background(Color(.systemBackground))
+        .navigationTitle("Notifiche")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
