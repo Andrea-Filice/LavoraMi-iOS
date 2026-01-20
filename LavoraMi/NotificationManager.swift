@@ -117,6 +117,61 @@ class NotificationManager {
             }
         }
     }
+        func removeStrikeNotifications() {
+            let center = UNUserNotificationCenter.current()
+            let identifiers = ["STRIKE_DAY", "STRIKE_PRE"]
+            center.removePendingNotificationRequests(withIdentifiers: identifiers)
+            print("Notifiche sciopero rimosse.")
+        }
+
+        func scheduleStrikeNotifications(dateString: String, companies: String, guaranteed: String) {
+            removeStrikeNotifications()
+            guard strikeNotifications && enableNotifications else { return }
+            
+            let center = UNUserNotificationCenter.current()
+            let calendar = Calendar.current
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd/MM/yyyy"
+            dateFormatter.locale = Locale(identifier: "it_IT")
+            
+            guard let strikeDate = dateFormatter.date(from: dateString) else {
+                print("Errore: Impossibile convertire '\(dateString)'")
+                return
+            }
+            
+            var dayOfComponents = calendar.dateComponents([.year, .month, .day, .hour], from: strikeDate)
+            dayOfComponents.hour = 8
+            dayOfComponents.minute = 0
+            
+            if let fireDate = calendar.date(from: dayOfComponents), fireDate > Date() {
+                let content = UNMutableNotificationContent()
+                content.title = "🚫 Oggi Sciopero!"
+                content.body = "Oggi è previsto uno sciopero di \(companies), le fascie garantite \(guaranteed)."
+                content.sound = .default
+                
+                let req = UNNotificationRequest(identifier: "STRIKE_DAY", content: content, trigger: UNCalendarNotificationTrigger(dateMatching: dayOfComponents, repeats: false))
+                center.add(req)
+                print("🔔 Sciopero programmato per il: \(fireDate.formatted())")
+            }
+            
+            if let dayBefore = calendar.date(byAdding: .day, value: -1, to: strikeDate) {
+                var dayBeforeComponents = calendar.dateComponents([.year, .month, .day, .hour], from: dayBefore)
+                dayBeforeComponents.hour = 18
+                dayBeforeComponents.minute = 0
+                
+                if let firePreDate = calendar.date(from: dayBeforeComponents), firePreDate > Date() {
+                    let contentPre = UNMutableNotificationContent()
+                    contentPre.title = "⚠️ Domani Sciopero!"
+                    contentPre.body = "Domani c'è sciopero per \(companies), le fascie garantite \(guaranteed)"
+                    contentPre.sound = .default
+                    
+                    let reqPre = UNNotificationRequest(identifier: "STRIKE_PRE", content: contentPre, trigger: UNCalendarNotificationTrigger(dateMatching: dayBeforeComponents, repeats: false))
+                    center.add(reqPre)
+                    print("🔔 Preavviso sciopero programmato per il: \(firePreDate.formatted())")
+                }
+            }
+        }
     
     func removeWorkAlerts(for work: WorkItem) {
         let center = UNUserNotificationCenter.current()

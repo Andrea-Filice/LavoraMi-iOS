@@ -111,6 +111,16 @@ class WorkViewModel: ObservableObject {
                     self?.companiesStrikes = result.companies
                     self?.dateStrike = result.date
                     self?.guaranteed = result.guaranteed
+                    
+                    if self?.strikeEnabled == true {
+                            NotificationManager.shared.scheduleStrikeNotifications(
+                                dateString: result.date,
+                                companies: result.companies,
+                                guaranteed: result.guaranteed
+                            )
+                        } else {
+                            NotificationManager.shared.removeStrikeNotifications()
+                        }
                 }
             } catch {
                 DispatchQueue.main.async {

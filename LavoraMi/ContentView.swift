@@ -50,7 +50,7 @@ struct ContentView: View {
                 .tabItem{
                     Label("Linee", systemImage: "arrow.branch")
                 }
-            SettingsView()
+            SettingsView(viewModel: viewModel)
                 .tabItem{Label("Impostazioni", systemImage: "gear")}
         }
         .tint(.red)
@@ -367,7 +367,7 @@ struct SettingsView: View{
     @State private var expandedATMLines = false
     @State private var presentedAlertReset = false
     @State private var showBuildNumber = false
-    @StateObject private var viewModel = WorkViewModel()
+    @StateObject var viewModel: WorkViewModel
     
     //APP DATAS
     @AppStorage("enableNotifications") private var enableNotifications: Bool = true
@@ -580,6 +580,8 @@ struct NotificationsView: View {
     @AppStorage("workInProgressNotifications") var workInProgressNotifications: Bool = true
     @AppStorage("strikeNotifications") var strikeNotifications: Bool = true
     @AppStorage("enableNotifications") var enableNotifications: Bool = true
+    @AppStorage("linesFavorites") var linesFavorites: [String] = []
+    
     @ObservedObject var viewModel: WorkViewModel
     
     var body: some View {
@@ -594,32 +596,38 @@ struct NotificationsView: View {
                         workScheduledNotifications = enableNotifications
                         workInProgressNotifications = enableNotifications
                         strikeNotifications = enableNotifications
+                        print("-- INIZIO SYNCH DELLE NOTIFICHE --")
                         
-                        if(enableNotifications){
-                            for item in viewModel.items {
-                                NotificationManager.shared.scheduleWorkAlerts(for: item)
-                            }
-                        }
-                        else{
-                            for item in viewModel.items {
-                                NotificationManager.shared.removeWorkAlerts(for: item)
-                            }
-                        }
+                        //SYNC NOTIFICATIONS
+                        viewModel.fetchVariables() //SYNC STRIKES NOTIFICATIONS
+                        NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
                     }
                 }
                 Section("Notifiche Lavori") {
                     Toggle(isOn: $workScheduledNotifications){
                         Label("Notifiche Inizio Lavori", systemImage: "bell.badge.fill")
                     }
+                    .onChange(of: workScheduledNotifications){
+                        NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
+                        print("-- INIZIO SYNCH NOTIFICHE IN PROGRESS --")
+                    }
                     .disabled(!enableNotifications)
                     Toggle(isOn: $workInProgressNotifications){
                         Label("Notifiche Fine Lavori", systemImage: "bell.badge.fill")
+                    }
+                    .onChange(of: workInProgressNotifications){
+                        NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
+                        print("-- INIZIO SYNCH NOTIFICHE IN PROGRESS --")
                     }
                     .disabled(!enableNotifications)
                 }
                 Section("Notifiche Scioperi"){
                     Toggle(isOn: $strikeNotifications){
                         Label("Notifiche Scioperi", systemImage: "bell.badge.waveform.fill")
+                    }
+                    .onChange(of: strikeNotifications){
+                        viewModel.fetchVariables()
+                        print("-- INIZIO SYNCH NOTIFICHE STRIKE --")
                     }
                     .disabled(!enableNotifications)
                 }
