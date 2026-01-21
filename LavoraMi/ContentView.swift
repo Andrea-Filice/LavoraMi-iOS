@@ -150,7 +150,7 @@ struct SetupView: View {
                     .padding(.bottom)
                 }
             }
-            .navigationTitle(Text("Benvenuto"))
+            .navigationTitle(Text("LavoraMi"))
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Salta") { hasNotCompletedSetup = false; dismiss() }
@@ -161,6 +161,7 @@ struct SetupView: View {
 
     private func dismiss() {
         presentationMode.wrappedValue.dismiss()
+        NotificationManager.shared.requestPermission()
     }
 }
 
@@ -883,7 +884,7 @@ struct NotificationsView: View {
                 print("-- INIZIO SYNCH DELLE NOTIFICHE --")
                 
                 //SYNC NOTIFICATIONS
-                viewModel.fetchVariables() //SYNC STRIKES NOTIFICATIONS
+                viewModel.fetchVariables()
                 NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
             }
 
@@ -1002,6 +1003,13 @@ struct InfoView: View {
                         Label("Segnala un bug", systemImage: "ladybug.fill")
                             .font(.system(size: 20))
                     }
+                    .padding(.top, 5)
+                    .padding(.bottom, 20)
+                    Link(destination: URL(string: "google.com")!) {
+                        Label("Sito web", systemImage: "network")
+                            .font(.system(size: 20))
+                    }
+                    .padding(.top, 5)
                     .padding(.bottom, 20)
                     Spacer()
                 }
