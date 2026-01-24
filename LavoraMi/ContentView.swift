@@ -999,10 +999,23 @@ struct InfoView: View {
                             .font(.system(size: 25))
                             .padding(.top, -5)
                         
-                        Text("Sviluppatore Android:")
+                        Text("Sviluppatori Android:")
                             .font(.system(size: 20))
                             .padding(.top, 20)
                         Text("Tommaso Ruggeri")
+                            .bold()
+                            .font(.system(size: 25))
+                        Text("Alessandro Rebuscini")
+                            .bold()
+                            .font(.system(size: 25))
+                        
+                        Text("Sviluppatori Web:")
+                            .font(.system(size: 20))
+                            .padding(.top, 20)
+                        Text("Simone Gallotti")
+                            .bold()
+                            .font(.system(size: 25))
+                        Text("Riccardo De Diana")
                             .bold()
                             .font(.system(size: 25))
                     }
@@ -1247,7 +1260,7 @@ struct LinesView: View {
     
     var trams: [LineInfo] {
         [
-            LineInfo(name: "1", branches: "Roserio - Centrale FS", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "1", branches: "Roserio - Greco", type: "Tram", waitMinutes: "5-20 min.", stations: []),
             LineInfo(name: "2", branches: "P.Le Negrelli - P.Za Bausan", type: "Tram", waitMinutes: "5-20 min.", stations: []),
             LineInfo(name: "3", branches: "Duomo M1 M3 - Gratosoglio", type: "Tram", waitMinutes: "5-20 min.", stations: []),
             LineInfo(name: "4", branches: "Cairoli M1 - Niguarda (Parco Nord)", type: "Tram", waitMinutes: "5-20 min.", stations: []),
