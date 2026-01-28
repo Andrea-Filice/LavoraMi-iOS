@@ -1212,7 +1212,6 @@ struct LinesView: View {
     var filteredMovibus: [LineInfo] { filtered(bus) }
     var filteredSTAV: [LineInfo] { filtered(stav) }
     var filteredAutoguidovie: [LineInfo] { filtered(autoguidovie) }
-    var filteredUrbano: [LineInfo] { filtered(urbanoPavia) }
     var filteredCrossBorders: [LineInfo] { filtered(crossBorderLines) }
     var filteredMalpensaExpress: [LineInfo] { filtered(malpensaExpress) }
     
@@ -1382,24 +1381,6 @@ struct LinesView: View {
             LineInfo(name: "k601", branches: "Crema - Soncino", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "k208", branches: "Cremona - S.Daniele - Casalmaggiore", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "k214", branches: "Cremona - Pieve d'Olmi - Viadana", type: "Autoguidovie", waitMinutes: "", stations: []),
-        ]
-    }
-    
-    var urbanoPavia: [LineInfo] {
-        [
-            // MARK: - Area Pavia (Urbano ed Extraurbano)
-            LineInfo(name: "P1", branches: "Montemontanino - S.Genesio - C.na Pelizza (Urbano PV)", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "P2", branches: "Vallisneri - Pavia FS - Cravino (Urbano PV)", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "P3", branches: "Maugeri/Mondino - Stazione FS - Montebolone (Urbano PV)", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "P4", branches: "Vallone - Stazione FS - Sora (Urbano PV)", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "P6", branches: "Cascina Pelizza - Pavia FS - Travaco (Urbano PV)", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "P7", branches: "Maugeri/Mondino - Pavia FS - Cura Carpignano (Urbano PV)", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "P172", branches: "Pavia - Binasco - Milano Romolo M2", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "P175", branches: "Pavia - Siziano - Milano Famagosta", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "P94", branches: "Pavia - Vidigulfo - Milano Famagosta", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "P96", branches: "Pavia - Gropello - Milano Famagosta", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "P165", branches: "Pavia - Inverno - S.Angelo Lodigiano", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "P182", branches: "Pavia - Garlasco - Mortara", type: "Autoguidovie", waitMinutes: "", stations: []),
         ]
     }
     
@@ -1691,40 +1672,6 @@ struct LinesView: View {
                         Spacer()
                         Button(action: {
                             selectedURL = URL(string: "https://autoguidovie.it/it/avvisi")!
-                        }) {
-                            Image(systemName: "info.circle.fill")
-                                .foregroundColor(.gray)
-                        }
-                    }
-                }
-                Section(){
-                    if(!filteredUrbano.isEmpty){
-                        ForEach(filteredUrbano, id: \.id){bus in
-                            LineRow(line: bus.name, typeOfTransport: bus.type, branches: bus.branches, waitMinutes: bus.waitMinutes, stations: bus.stations, viewModel: viewModel)
-                        }
-                    }
-                    else{
-                        Text("Nessuna corrispondenza trovata.")
-                    }
-                }
-                header: {
-                    HStack{
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Linee di Bus")
-                                .font(.title3)
-                                .bold()
-                                .foregroundStyle(.primary)
-                                .textCase(nil)
-                            
-                            Text("Urbano di Pavia")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                                .textCase(nil)
-                        }
-                        .padding(.bottom, 4)
-                        Spacer()
-                        Button(action: {
-                            selectedURL = URL(string: "https://pavia.autoguidovie.it/it/l/news/index")!
                         }) {
                             Image(systemName: "info.circle.fill")
                                 .foregroundColor(.gray)
