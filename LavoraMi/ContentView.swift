@@ -227,6 +227,8 @@ struct SetupPageView: View {
 
 struct MainView: View{
     @AppStorage("preferredFilter") private var preferredFilter: FilterBy = .all
+    @AppStorage("showErrorMessages") var showErrorMessages: Bool = false
+    
     @State private var closedStrike: Bool = false
     @State private var selectedFilter: FilterBy = .all
     @State private var searchInput: String = ""
@@ -441,9 +443,11 @@ struct MainView: View{
                                     Label("Riprova", systemImage: "arrow.clockwise")
                                 }
                                 .buttonStyle(.bordered)
-                                Text("\(error)")
-                                    .font(.footnote)
-                                    .foregroundStyle(.gray)
+                                if(showErrorMessages){
+                                    Text("\(error)")
+                                        .font(.footnote)
+                                        .foregroundStyle(.gray)
+                                }
                             }
                             .frame(maxWidth: .infinity, alignment: .center)
                             .containerRelativeFrame(.vertical)
@@ -793,6 +797,9 @@ struct SettingsView: View{
                         Label("Filtro Predefinito", systemImage: "line.3.horizontal.decrease.circle.fill")
                     }
                     .pickerStyle(.navigationLink)
+                    NavigationLink(destination: AdvancedOptionsView()){
+                        Label("Opzioni Avanzate", systemImage: "gearshape.2.fill")
+                    }
                 }
                 Section("Informazioni"){
                     NavigationLink(destination: InfoView()){
@@ -839,6 +846,42 @@ struct SettingsView: View{
                 Text("Sei sicuro di voler ripristinare le impostazioni?")
             }
         }
+    }
+}
+
+struct AdvancedOptionsView: View {
+    @AppStorage("showErrorMessages") var showErrorMessages: Bool = false
+    @AppStorage("linkOpenURL") var howToOpenLinks: linkOpenTypes = .inApp
+    
+    enum linkOpenTypes: String, CaseIterable, Identifiable{
+        case inApp = "In App"
+        case safari = "Safari"
+        
+        var id: String{self.rawValue}
+    }
+    
+    var body: some View {
+        List{
+            Section(footer: Text("Mostra messaggi di errore quando fallisce il download dei Dati.")){
+                Toggle(isOn: $showErrorMessages){
+                    Label("Mostra messaggi di Errore", systemImage: "exclamationmark.bubble.fill")
+                }
+            }
+            Section(footer: Text("Seleziona la modalità in cui aprire i link. Default: In App")){
+                Picker(selection: $howToOpenLinks, content: {
+                    ForEach(linkOpenTypes.allCases) { filter in
+                        Text(filter.rawValue).tag(filter)
+                            .foregroundStyle(Color("TextColor"))
+                    }
+                }, label: {
+                    Text("")
+                })
+                .pickerStyle(.inline)
+                .labelsHidden()
+            }
+        }
+        .navigationTitle("Opzioni Avanzate")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -1162,6 +1205,7 @@ struct LineRow: View {
 }
 
 struct LinesView: View {
+    @Environment(\.openURL) private var openURLAction
     @ObservedObject var viewModel: WorkViewModel
 
     @State private var searchInput: String = ""
@@ -1384,6 +1428,15 @@ struct LinesView: View {
         ]
     }
     
+    @AppStorage("linkOpenURL") var howToOpenLinks: linkOpenTypes = .inApp
+    
+    enum linkOpenTypes: String, CaseIterable, Identifiable{
+        case inApp = "In App"
+        case safari = "Safari"
+        
+        var id: String{self.rawValue}
+    }
+    
     var body: some View {
         NavigationStack{
             HStack {
@@ -1433,7 +1486,12 @@ struct LinesView: View {
                         .padding(.bottom, 4)
                         Spacer()
                         Button(action: {
-                            selectedURL = URL(string: "https://giromilano.atm.it/assets/images/schema_rete_metro.jpg")
+                            let url = URL(string: "https://giromilano.atm.it/assets/images/schema_rete_metro.jpg")!
+                            if howToOpenLinks == .inApp {
+                                selectedURL = url
+                            } else {
+                                openURLAction(url)
+                            }
                         }) {
                             Image(systemName: "info.circle.fill")
                                 .foregroundColor(.gray)
@@ -1467,7 +1525,12 @@ struct LinesView: View {
                         .padding(.bottom, 4)
                         Spacer()
                         Button(action: {
-                            selectedURL = URL(string: "https://www.trenord.it/linee-e-orari/circolazione/le-nostre-linee/")
+                            let url = URL(string: "https://www.trenord.it/linee-e-orari/circolazione/le-nostre-linee/")!
+                            if howToOpenLinks == .inApp {
+                                selectedURL = url
+                            } else {
+                                openURLAction(url)
+                            }
                         }) {
                             Image(systemName: "info.circle.fill")
                                 .foregroundColor(.gray)
@@ -1501,7 +1564,12 @@ struct LinesView: View {
                         .padding(.bottom, 4)
                         Spacer()
                         Button(action: {
-                            selectedURL = URL(string: "https://www.tilo.ch")
+                            let url = URL(string: "https://www.tilo.ch")!
+                            if howToOpenLinks == .inApp {
+                                selectedURL = url
+                            } else {
+                                openURLAction(url)
+                            }
                         }) {
                             Image(systemName: "info.circle.fill")
                                 .foregroundColor(.gray)
@@ -1535,7 +1603,12 @@ struct LinesView: View {
                         .padding(.bottom, 4)
                         Spacer()
                         Button(action: {
-                            selectedURL = URL(string: "https://www.malpensaexpress.it")
+                            let url = URL(string: "https://www.malpensaexpress.it")!
+                            if howToOpenLinks == .inApp {
+                                selectedURL = url
+                            } else {
+                                openURLAction(url)
+                            }
                         }) {
                             Image(systemName: "info.circle.fill")
                                 .foregroundColor(.gray)
@@ -1569,7 +1642,12 @@ struct LinesView: View {
                         .padding(.bottom, 4)
                         Spacer()
                         Button(action: {
-                            selectedURL = URL(string: "https://www.atm.it/it/AltriServizi/Trasporto/Documents/Carta%20ATM_WEB_2025.11.pdf")
+                            let url = URL(string: "https://www.atm.it/it/AltriServizi/Trasporto/Documents/Carta%20ATM_WEB_2025.11.pdf")!
+                            if howToOpenLinks == .inApp {
+                                selectedURL = url
+                            } else {
+                                openURLAction(url)
+                            }
                         }) {
                             Image(systemName: "info.circle.fill")
                                 .foregroundColor(.gray)
@@ -1603,7 +1681,12 @@ struct LinesView: View {
                         .padding(.bottom, 4)
                         Spacer()
                         Button(action: {
-                            selectedURL = URL(string: "https://movibus.it/news/")
+                            let url = URL(string: "https://movibus.it/news/")!
+                            if howToOpenLinks == .inApp {
+                                selectedURL = url
+                            } else {
+                                openURLAction(url)
+                            }
                         }) {
                             Image(systemName: "info.circle.fill")
                                 .foregroundColor(.gray)
@@ -1637,7 +1720,12 @@ struct LinesView: View {
                         .padding(.bottom, 4)
                         Spacer()
                         Button(action: {
-                            selectedURL = URL(string: "https://stavautolinee.it/reti-servite/")
+                            let url = URL(string: "https://stavautolinee.it/reti-servite/")!
+                            if howToOpenLinks == .inApp {
+                                selectedURL = url
+                            } else {
+                                openURLAction(url)
+                            }
                         }) {
                             Image(systemName: "info.circle.fill")
                                 .foregroundColor(.gray)
@@ -1671,7 +1759,12 @@ struct LinesView: View {
                         .padding(.bottom, 4)
                         Spacer()
                         Button(action: {
-                            selectedURL = URL(string: "https://autoguidovie.it/it/avvisi")!
+                            let url = URL(string: "https://autoguidovie.it/it/avvisi")!
+                            if howToOpenLinks == .inApp {
+                                selectedURL = url
+                            } else {
+                                openURLAction(url)
+                            }
                         }) {
                             Image(systemName: "info.circle.fill")
                                 .foregroundColor(.gray)
