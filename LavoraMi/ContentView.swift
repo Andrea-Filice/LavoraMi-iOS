@@ -424,11 +424,10 @@ struct MainView: View{
                 ScrollView{
                     LazyVStack(spacing: 12){
                         if viewModel.isLoading {
-                            ProgressView("Caricamento in corso...")
-                                .padding()
-                                .containerRelativeFrame(.vertical)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                            
+                            ForEach(0..<6, id: \.self) { _ in
+                                WorkRowSkeleton()
+                                    .padding(.horizontal)
+                            }
                         } else if let error = viewModel.errorMessage {
                             VStack (spacing: 10){
                                 Image(systemName: "wifi.slash")
@@ -549,6 +548,120 @@ struct WorkInProgressRow: View {
                         .foregroundStyle(Color("TextColor"))
                 }
             }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color(.secondarySystemBackground))
+        )
+        .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
+    }
+}
+
+struct ShimmerModifier: ViewModifier {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var progress: CGFloat = 0.0
+
+    var duration: Double = 1.25
+    var angle: Angle = .degrees(12)
+    var bandFraction: CGFloat = 0.35
+    
+    func body(content: Content) -> some View {
+        content
+            .overlay {
+                GeometryReader { proxy in
+                    let width = proxy.size.width
+                    let height = proxy.size.height
+                    let bandWidth = max(80, width * bandFraction)
+                    let startX = -bandWidth
+                    let endX = width + bandWidth
+                    let x = startX + (endX - startX) * progress
+
+                    let highlight = colorScheme == .dark ? Color.white.opacity(0.18) : Color.white.opacity(0.22)
+
+                    Rectangle()
+                        .fill(
+                            LinearGradient(
+                                stops: [
+                                    .init(color: .clear, location: 0.0),
+                                    .init(color: highlight, location: 0.5),
+                                    .init(color: .clear, location: 1.0)
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                        .frame(width: bandWidth, height: height * 2)
+                        .rotationEffect(angle)
+                        .offset(x: x, y: 0)
+                        .blendMode(.screen)
+                }
+                .allowsHitTesting(false)
+                .clipped()
+            }
+            .onAppear {
+                guard !reduceMotion else { return }
+                progress = 0
+                withAnimation(.linear(duration: duration).repeatForever(autoreverses: false)) {
+                    progress = 1
+                }
+            }
+            .onDisappear {
+                progress = 0
+            }
+    }
+}
+
+extension View {
+    func shimmer() -> some View { modifier(ShimmerModifier()) }
+}
+
+struct WorkRowSkeleton: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Group {
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(Color(.tertiarySystemFill))
+                    .frame(height: 18)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(Color(.tertiarySystemFill))
+                    .frame(width: 180, height: 14)
+
+                HStack(spacing: 8) {
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color(.tertiarySystemFill))
+                        .frame(width: 40, height: 20)
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color(.tertiarySystemFill))
+                        .frame(width: 32, height: 20)
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color(.tertiarySystemFill))
+                        .frame(width: 50, height: 20)
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color(.tertiarySystemFill))
+                        .frame(width: 28, height: 20)
+                }
+
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(Color(.tertiarySystemFill))
+                    .frame(height: 6)
+                HStack {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color(.tertiarySystemFill))
+                        .frame(width: 90, height: 10)
+                    Spacer()
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color(.tertiarySystemFill))
+                        .frame(width: 90, height: 10)
+                }
+
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(Color(.tertiarySystemFill))
+                    .frame(width: 120, height: 12)
+            }
+            .shimmer()
         }
         .padding(16)
         .background(
@@ -2754,3 +2867,4 @@ struct SafariView: UIViewControllerRepresentable {
 #Preview {
     ContentView()
 }
+
