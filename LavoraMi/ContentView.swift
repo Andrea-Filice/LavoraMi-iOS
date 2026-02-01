@@ -975,7 +975,7 @@ struct AdvancedOptionsView: View {
     
     var body: some View {
         List{
-            Section(footer: Text("Mostra messaggi di errore quando fallisce il download dei Dati.")){
+            Section(footer: Text("Mostra messaggi di errore quando fallisce il Download dei dati.")){
                 Toggle(isOn: $showErrorMessages){
                     Label("Mostra messaggi di Errore", systemImage: "exclamationmark.bubble.fill")
                 }
