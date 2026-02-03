@@ -1089,7 +1089,7 @@ struct AccountView: View {
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background((email.isEmpty || password.isEmpty || auth.isLoading) ? Color.gray.opacity(0.5) : Color.blue)
+                        .background((email.isEmpty || password.isEmpty || auth.isLoading) ? Color.gray.opacity(0.5) : Color.red)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                         .shadow(radius: 5, y: 3)
                     }
@@ -1180,7 +1180,7 @@ struct AccountView: View {
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background((email.isEmpty || password.isEmpty || fullName.isEmpty || auth.isLoading) ? Color.gray.opacity(0.5) : Color.blue)
+                        .background((email.isEmpty || password.isEmpty || fullName.isEmpty || auth.isLoading) ? Color.gray.opacity(0.5) : Color.red)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                         .shadow(radius: 5, y: 3)
                     }
@@ -1191,42 +1191,67 @@ struct AccountView: View {
                         Text("Il tuo account")
                             .font(.system(size: 32, weight: .bold))
                             .foregroundStyle(.primary)
-
-                        VStack(spacing: 16) {
-                            HStack(spacing: 15) {
-                                Image(systemName: "person.fill")
-                                    .foregroundStyle(.gray)
-                                TextField("Nome completo", text: $fullName)
-                                    .textInputAutocapitalization(.words)
+                        
+                        Section("Informazioni Account"){
+                            VStack(spacing: 16) {
+                                Label(fullName, systemImage: "person.fill")
+                                    .font(.system(size: 25))
+                                    .tint(.red)
+                                
+                                Label(email, systemImage: "envelope.fill")
+                                    .font(.system(size: 25))
+                                    .tint(.red)
                             }
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-
-                            HStack(spacing: 15) {
-                                Image(systemName: "envelope.fill")
-                                    .foregroundStyle(.gray)
-                                TextField("Email", text: $email)
-                                    .keyboardType(.emailAddress)
-                                    .textContentType(.emailAddress)
-                                    .textInputAutocapitalization(.never)
-                                    .disabled(true)
-                            }
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-
-                            HStack(spacing: 15) {
-                                Image(systemName: "lock.fill")
-                                    .foregroundStyle(.gray)
-                                SecureField("Password", text: $password)
-                                    .disabled(true)
-                            }
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
                         }
-
+                        .foregroundStyle(.gray)
+                        
+                        Section("Gestisci Account"){
+                            VStack{
+                                Button(role: .destructive, action: {
+                                    Task {
+                                        await auth.signOut()
+                                        loggedIn = false
+                                        isLogginIn = true
+                                        email = ""
+                                        password = ""
+                                        fullName = ""
+                                    }
+                                }) {
+                                    Label("Modifica Password", systemImage: "lock.fill")
+                                        .font(.system(size: 15))
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(.white)
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(Color.blue)
+                                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                                        .shadow(radius: 5, y: 3)
+                                }
+                                Button(role: .destructive, action: {
+                                    Task {
+                                        await auth.signOut()
+                                        await auth.deleteAccount()
+                                        loggedIn = false
+                                        isLogginIn = true
+                                        email = ""
+                                        password = ""
+                                        fullName = ""
+                                    }
+                                }) {
+                                    Label("Elimina Account", systemImage: "trash.fill")
+                                        .font(.system(size: 15))
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(.white)
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(Color.blue)
+                                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                                        .shadow(radius: 5, y: 3)
+                                }
+                            }
+                        }
+                        .foregroundStyle(.gray)
+                        
                         Spacer()
 
                         Button(role: .destructive, action: {
@@ -1258,13 +1283,15 @@ struct AccountView: View {
             }
             .padding(25)
             .onAppear {
-                loggedIn = auth.isLoggedIn()
+                //loggedIn = auth.isLoggedIn()
+                loggedIn = true
                 if loggedIn {
                     if fullName.isEmpty { fullName = auth.getFullName() }
                     if email.isEmpty, let sess = auth.session { email = sess.user.email ?? email }
                 }
             }
             .navigationTitle("Account")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
@@ -2161,7 +2188,7 @@ struct LinesView: View {
                 }
                 Section(){
                     if(!filteredAutoguidovie.isEmpty){
-                        ForEach(filteredAutoguidovie, id: \.id){bus in
+                        ForEach(filteredAutoguidovie, id: \.id){ bus in
                             LineRow(line: bus.name, typeOfTransport: bus.type, branches: bus.branches, waitMinutes: bus.waitMinutes, stations: bus.stations, viewModel: viewModel)
                         }
                     }

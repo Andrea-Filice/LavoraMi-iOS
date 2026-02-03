@@ -53,7 +53,6 @@ class AuthManager: ObservableObject {
         errorMessage = nil
         do {
             _ = try await supabase.auth.signIn(email: email, password: password)
-            // Fetch the current session immediately to update UI state
             self.session = try await supabase.auth.session
             print("Login effettuato!")
         } catch {
@@ -94,5 +93,28 @@ class AuthManager: ObservableObject {
     func isLoggedIn() -> Bool{
         return session != nil
     }
+    
+    func deleteAccount() async {
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            guard session != nil else {
+                errorMessage = "Nessun utente loggato."
+                isLoading = false
+                return
+            }
+            
+            try await supabase.rpc("delete_user")
+            
+            self.session = nil
+            print("Account eliminato definitivamente.")
+            
+        } catch {
+            print("Errore durante l'eliminazione: \(error)")
+            errorMessage = "Impossibile eliminare l'account: \(error.localizedDescription)"
+        }
+        
+        isLoading = false
+    }
 }
-
