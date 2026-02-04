@@ -105,7 +105,7 @@ class AuthManager: ObservableObject {
                 return
             }
             
-            try await supabase.rpc("delete_user")
+            try await supabase.rpc("delete_user").execute()
             
             self.session = nil
             print("Account eliminato definitivamente.")

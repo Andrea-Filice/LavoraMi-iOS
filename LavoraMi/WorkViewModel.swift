@@ -18,8 +18,8 @@ class WorkViewModel: ObservableObject {
     @Published var dateStrike: String = ""
     @Published var guaranteed: String = ""
     
-    private let urlString = "https://cdn-playepik.netlify.app/LavoraMI/lavoriAttuali.json"
-    private let urlVariables = "https://cdn-playepik.netlify.app/LavoraMI/_vars.json"
+    private let urlString = "https://cdn.lavorami.it/lavoriAttuali.json"
+    private let urlVariables = "https://cdn.lavorami.it/_vars.json"
     
     func fetchWorks() {
         guard let url = URL(string: urlString) else {
