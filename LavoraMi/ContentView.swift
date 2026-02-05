@@ -1454,7 +1454,7 @@ struct InfoView: View {
                     .font(.system(size: 35))
                     .bold()
             }
-            Text(Bundle.main.shortVersion)
+            Text("\(Bundle.main.shortVersion) (Build \(Bundle.main.buildVersion))")
             Divider()
             ScrollView{
                 Section(){
@@ -1534,8 +1534,23 @@ struct InfoView: View {
                     }
                     .padding(.top, 5)
                     .padding(.bottom, 20)
-                    Link(destination: URL(string: "lavorami.it")!) {
+                    Link(destination: URL(string: "https://lavorami.it")!) {
                         Label("Sito web", systemImage: "network")
+                            .font(.system(size: 20))
+                    }
+                    .padding(.top, 5)
+                    .padding(.bottom, 20)
+                    Spacer()
+                }
+                Divider().padding(.top, 10)
+                Section(){
+                    Text("Supportaci")
+                        .font(.system(size: 30))
+                        .bold()
+                        .padding(.top, 20)
+                    
+                    Link(destination: URL(string: "https://www.patreon.com/cw/LavoraMi")!) {
+                        Label("Supportaci su Patreon", systemImage: "person.2.fill")
                             .font(.system(size: 20))
                     }
                     .padding(.top, 5)
@@ -2974,6 +2989,7 @@ func getColor(for line: String) -> Color {
         case "S30": return Color(red: 0, green: 166/255, blue: 81/255)
         case "S40": return Color(red: 117/255, green: 188/255, blue: 118/255)
         case "S50": return Color(red: 131/255, green: 76/255, blue: 22/255)
+        case "RE80": return .blue
         
         //METRO LINES
         case "M1": return Color(red: 228/255, green: 5/255, blue: 32/255)
