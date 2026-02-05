@@ -1003,7 +1003,11 @@ struct AccountView: View {
     @State private var showDeletePopUp: Bool = false
     @State private var showEditPasswordPopUp: Bool = false
     @State private var showConfirmToExitPopUp: Bool = false
+    @State private var isLocked: Bool = true
     @State private var text: String = ""
+    @Environment(\.dismiss) private var dismiss
+    
+    @AppStorage("requireFaceID") var requireFaceID: Bool = true
     
     var body: some View {
         NavigationStack {
@@ -1323,11 +1327,26 @@ struct AccountView: View {
                 }
             }
             .padding(25)
+            .blur(radius: isLocked ? 12 : 0)
+            .animation(.easeInOut(duration: 0.25), value: isLocked)
+            .allowsHitTesting(!isLocked)
             .onAppear {
                 loggedIn = auth.isLoggedIn()
                 if loggedIn {
                     if fullName.isEmpty { fullName = auth.getFullName() }
                     if email.isEmpty, let sess = auth.session { email = sess.user.email ?? email }
+                }
+                if(requireFaceID){
+                    BiometricAuth.authenticate{
+                        print("FaceID Recognized!")
+                        isLocked = false
+                    } onFailure: { error in
+                        print("Error during read of FaceID")
+                        dismiss()
+                    }
+                }
+                else{
+                    isLocked = false
                 }
             }
             .navigationTitle("Account")
@@ -1339,6 +1358,7 @@ struct AccountView: View {
 struct AdvancedOptionsView: View {
     @AppStorage("showErrorMessages") var showErrorMessages: Bool = false
     @AppStorage("showStrikeBanner") var showStrikeBanner: Bool = true
+    @AppStorage("requireFaceID") var requireFaceID: Bool = true
     @AppStorage("linkOpenURL") var howToOpenLinks: linkOpenTypes = .inApp
     
     enum linkOpenTypes: String, CaseIterable, Identifiable{
@@ -1358,6 +1378,11 @@ struct AdvancedOptionsView: View {
             Section(footer: Text("Mostra il banner degli scioperi nella Home quando sono presenti.")){
                 Toggle(isOn: $showStrikeBanner){
                     Label("Mostra banner Scioperi", systemImage: "text.append")
+                }
+            }
+            Section(footer: Text("Richiedi il FaceID per sbloccare la sezione del tuo Account.")){
+                Toggle(isOn: $requireFaceID){
+                    Label("Richiedi FaceID", systemImage: "faceid")
                 }
             }
             Section(footer: Text("Seleziona la modalità in cui aprire i link.")){
@@ -3265,4 +3290,3 @@ struct SafariView: UIViewControllerRepresentable {
 #Preview {
     ContentView()
 }
-
