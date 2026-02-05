@@ -40,7 +40,8 @@ class AuthManager: ObservableObject {
             let metadata: [String: AnyJSON] = ["full_name": .string(name)]
             
             _ = try await supabase.auth.signUp(email: email, password: password, data: metadata)
-            print("Registrazione effettuata. Controlla la mail!")
+            print("Registrazione effettuata.")
+            await signIn(email: email, password: password)
             do { self.session = try await supabase.auth.session } catch { }
         } catch {
             errorMessage = error.localizedDescription
@@ -105,7 +106,8 @@ class AuthManager: ObservableObject {
                 return
             }
             
-            try await supabase.rpc("delete_user").execute()
+            try await supabase.rpc("delete_self").execute()
+            try await supabase.auth.signOut()
             
             self.session = nil
             print("Account eliminato definitivamente.")
@@ -116,5 +118,18 @@ class AuthManager: ObservableObject {
         }
         
         isLoading = false
+    }
+    
+    func editPassword(password: String) async {
+        do{
+            try await supabase.auth.update(
+                user: UserAttributes(
+                    password: password
+                )
+            )
+        }
+        catch{
+            print("Errore durante la modifica della Password.")
+        }
     }
 }

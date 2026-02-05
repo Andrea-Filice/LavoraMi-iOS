@@ -712,7 +712,7 @@ struct SettingsView: View{
                                         .foregroundStyle(.primary)
                                 }
                                 
-                                Text("Gestisci l'Account")
+                                Text("Gestisci il tuo Account")
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
                             }
@@ -953,11 +953,11 @@ struct SettingsView: View{
                             showBuildNumber = !showBuildNumber
                         }){
                             Label {
-                                    Text("Versione")
-                                        .foregroundColor(Color("TextColor"))
-                                } icon: {
-                                    Image(systemName: "info.circle.fill")
-                                }
+                                Text("Versione")
+                                    .foregroundColor(Color("TextColor"))
+                            } icon: {
+                                Image(systemName: "info.circle.fill")
+                            }
                         }
                         Spacer()
                         if(showBuildNumber){Text("\(Bundle.main.shortVersion) (\(Bundle.main.buildVersion))")
@@ -1000,6 +1000,10 @@ struct AccountView: View {
     @State private var isLogginIn: Bool = true
     @State private var loggedIn: Bool = false
     @State private var showError: Bool = false
+    @State private var showDeletePopUp: Bool = false
+    @State private var showEditPasswordPopUp: Bool = false
+    @State private var showConfirmToExitPopUp: Bool = false
+    @State private var text: String = ""
     
     var body: some View {
         NavigationStack {
@@ -1043,9 +1047,9 @@ struct AccountView: View {
 
                         HStack {
                             Spacer()
-                            Button("Password dimenticata?") { }
+                            /*Button("Password dimenticata?") { }
                                 .font(.caption)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(.red)*/
                             
                             Button(action: {
                                 isLogginIn = !isLogginIn
@@ -1188,34 +1192,44 @@ struct AccountView: View {
                 }
                 if loggedIn {
                     VStack(alignment: .leading, spacing: 20) {
-                        Text("Il tuo account")
+                        Text("Ciao \(fullName).")
                             .font(.system(size: 32, weight: .bold))
                             .foregroundStyle(.primary)
+                        Text("Qua puoi gestire il tuo account e le tue informazioni.")
+                            .font(.system(size: 12))
+                            .foregroundStyle(.gray)
+                            .padding(.top, -8)
                         
-                        Section("Informazioni Account"){
-                            VStack(spacing: 16) {
-                                Label(fullName, systemImage: "person.fill")
-                                    .font(.system(size: 25))
-                                    .tint(.red)
+                        Section("Informazioni"){
+                            VStack(alignment: .leading, spacing: 16) {
+                                Label {
+                                    Text(fullName)
+                                        .foregroundColor(Color("TextColor"))
+                                        .font(.system(size: 25))
+                                } icon: {
+                                    Image(systemName: "person.fill")
+                                        .foregroundStyle(.red)
+                                        .font(.system(size: 25))
+                                }
                                 
-                                Label(email, systemImage: "envelope.fill")
-                                    .font(.system(size: 25))
-                                    .tint(.red)
+                                Label {
+                                    Text(email)
+                                        .foregroundColor(Color("TextColor"))
+                                        .font(.system(size: 25))
+                                } icon: {
+                                    Image(systemName: "envelope.fill")
+                                        .foregroundStyle(.red)
+                                        .font(.system(size: 25))
+                                }
                             }
                         }
                         .foregroundStyle(.gray)
                         
-                        Section("Gestisci Account"){
+                        Section("Gestisci"){
                             VStack{
                                 Button(role: .destructive, action: {
-                                    Task {
-                                        await auth.signOut()
-                                        loggedIn = false
-                                        isLogginIn = true
-                                        email = ""
-                                        password = ""
-                                        fullName = ""
-                                    }
+                                    showEditPasswordPopUp = true
+                                    showEditPasswordPopUp = true
                                 }) {
                                     Label("Modifica Password", systemImage: "lock.fill")
                                         .font(.system(size: 15))
@@ -1228,15 +1242,7 @@ struct AccountView: View {
                                         .shadow(radius: 5, y: 3)
                                 }
                                 Button(role: .destructive, action: {
-                                    Task {
-                                        await auth.signOut()
-                                        await auth.deleteAccount()
-                                        loggedIn = false
-                                        isLogginIn = true
-                                        email = ""
-                                        password = ""
-                                        fullName = ""
-                                    }
+                                    showDeletePopUp = true
                                 }) {
                                     Label("Elimina Account", systemImage: "trash.fill")
                                         .font(.system(size: 15))
@@ -1250,19 +1256,39 @@ struct AccountView: View {
                                 }
                             }
                         }
+                        .alert("Sei sicuro?", isPresented: $showDeletePopUp) {
+                            Button("Annulla", role: .cancel) { }
+                            Button("Continua", role: .destructive) {
+                                Task {
+                                    await auth.deleteAccount()
+                                    loggedIn = false
+                                    isLogginIn = true
+                                    email = ""
+                                    password = ""
+                                    fullName = ""
+                                }
+                            }
+                        } message: {
+                            Text("Sei sicuro di voler Eliminare Definitivamente il tuo Account?")
+                        }
+                        .alert("Modifica Password", isPresented: $showEditPasswordPopUp) {
+                            Button("Annulla", role: .cancel) { }
+                            Button("Fine", role: .destructive) {
+                                Task {
+                                    await auth.editPassword(password: text)
+                                }
+                            }
+                            TextField("Inserisci", text: $text)
+                                .textContentType(.newPassword)
+                        } message: {
+                            Text("Inserisci la tua nuova password per accedere.")
+                        }
                         .foregroundStyle(.gray)
                         
                         Spacer()
 
                         Button(role: .destructive, action: {
-                            Task {
-                                await auth.signOut()
-                                loggedIn = false
-                                isLogginIn = true
-                                email = ""
-                                password = ""
-                                fullName = ""
-                            }
+                            showConfirmToExitPopUp = true
                         }) {
                             Text("Esci")
                                 .font(.headline)
@@ -1275,6 +1301,21 @@ struct AccountView: View {
                                 .shadow(radius: 5, y: 3)
                         }
                     }
+                    .alert("Sei sicuro?", isPresented: $showConfirmToExitPopUp) {
+                        Button("Annulla", role: .cancel) { }
+                        Button("Conferma", role: .destructive) {
+                            Task {
+                                await auth.signOut()
+                                loggedIn = false
+                                isLogginIn = true
+                                email = ""
+                                password = ""
+                                fullName = ""
+                            }
+                        }
+                    } message: {
+                        Text("Sei sicuro di voler uscire dall'account?")
+                    }
                     .onAppear {
                         if fullName.isEmpty { fullName = auth.getFullName() }
                         if email.isEmpty, let sess = auth.session { email = sess.user.email ?? email }
@@ -1283,8 +1324,7 @@ struct AccountView: View {
             }
             .padding(25)
             .onAppear {
-                //loggedIn = auth.isLoggedIn()
-                loggedIn = true
+                loggedIn = auth.isLoggedIn()
                 if loggedIn {
                     if fullName.isEmpty { fullName = auth.getFullName() }
                     if email.isEmpty, let sess = auth.session { email = sess.user.email ?? email }
