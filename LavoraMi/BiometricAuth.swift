@@ -36,4 +36,24 @@ struct BiometricAuth {
             }
         }
     }
+
+    static func getBiometricType() -> BiometricType {
+        let authContext = LAContext()
+        _ = authContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+
+        switch authContext.biometryType {
+        case .faceID:
+            return .faceID
+        case .touchID:
+            return .touchID
+        default:
+            return .none
+        }
+    }
+}
+
+enum BiometricType {
+    case none
+    case touchID
+    case faceID
 }

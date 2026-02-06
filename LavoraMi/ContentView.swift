@@ -707,7 +707,7 @@ struct SettingsView: View{
                                         .foregroundStyle(.primary)
                                 }
                                 else{
-                                    Text("Registrati / Login")
+                                    Text("Il tuo Account")
                                         .font(.headline)
                                         .foregroundStyle(.primary)
                                 }
@@ -1149,6 +1149,16 @@ struct AccountView: View {
                         .padding()
                         .background(Color(.systemGray6))
                         .clipShape(RoundedRectangle(cornerRadius: 16))
+                        HStack{
+                            Spacer()
+                            Button(action: {
+                                isLogginIn = !isLogginIn
+                            }){
+                                Text("Hai già un account?")
+                                    .font(.caption)
+                                    .foregroundStyle(.red)
+                            }
+                        }
                     }
                     
                     if let err = auth.errorMessage, !err.isEmpty {
@@ -1159,16 +1169,6 @@ struct AccountView: View {
                     }
 
                     Spacer()
-
-                    HStack{
-                        Button(action: {
-                            isLogginIn = !isLogginIn
-                        }){
-                            Text("Hai già un account?")
-                                .font(.caption)
-                                .foregroundStyle(.red)
-                        }
-                    }
                     
                     Button(action: {
                         Task {
@@ -1196,7 +1196,7 @@ struct AccountView: View {
                 }
                 if loggedIn {
                     VStack(alignment: .leading, spacing: 20) {
-                        Text("Ciao \(fullName).")
+                        Text("👋 Ciao \(fullName)")
                             .font(.system(size: 32, weight: .bold))
                             .foregroundStyle(.primary)
                         Text("Qua puoi gestire il tuo account e le tue informazioni.")
@@ -1336,7 +1336,7 @@ struct AccountView: View {
                     if fullName.isEmpty { fullName = auth.getFullName() }
                     if email.isEmpty, let sess = auth.session { email = sess.user.email ?? email }
                 }
-                if(requireFaceID){
+                if(requireFaceID && loggedIn){
                     BiometricAuth.authenticate{
                         print("FaceID Recognized!")
                         isLocked = false
@@ -1360,6 +1360,7 @@ struct AdvancedOptionsView: View {
     @AppStorage("showStrikeBanner") var showStrikeBanner: Bool = true
     @AppStorage("requireFaceID") var requireFaceID: Bool = true
     @AppStorage("linkOpenURL") var howToOpenLinks: linkOpenTypes = .inApp
+    private var currentDeviceBiometric: BiometricType = BiometricAuth.getBiometricType()
     
     enum linkOpenTypes: String, CaseIterable, Identifiable{
         case inApp = "In App"
@@ -1380,9 +1381,9 @@ struct AdvancedOptionsView: View {
                     Label("Mostra banner Scioperi", systemImage: "text.append")
                 }
             }
-            Section(footer: Text("Richiedi il FaceID per sbloccare la sezione del tuo Account.")){
+            Section(footer: Text("Richiedi il \(getBiometricTypeByEnum()) per sbloccare la sezione del tuo Account.")){
                 Toggle(isOn: $requireFaceID){
-                    Label("Richiedi FaceID", systemImage: "faceid")
+                    Label("Richiedi \(getBiometricTypeByEnum())", systemImage: (getBiometricTypeByEnum() == "Codice") ? "lock.fill" : getBiometricTypeByEnum().lowercased())
                 }
             }
             Section(footer: Text("Seleziona la modalità in cui aprire i link.")){
@@ -1401,6 +1402,17 @@ struct AdvancedOptionsView: View {
         }
         .navigationTitle("Opzioni Avanzate")
         .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    func getBiometricTypeByEnum() -> String {
+        switch(currentDeviceBiometric){
+            case .touchID:
+                return "TouchID"
+            case .faceID:
+                return "FaceID"
+            default:
+                return "Codice"
+        }
     }
 }
 
