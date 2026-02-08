@@ -16,13 +16,13 @@ struct BiometricAuth {
 
         var error: NSError?
 
-        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
             onFailure(error)
             return
         }
 
         context.evaluatePolicy(
-            .deviceOwnerAuthenticationWithBiometrics,
+            .deviceOwnerAuthentication,
             localizedReason: "Autenticazione richiesta"
         ) { success, authError in
             DispatchQueue.main.async {
@@ -37,7 +37,7 @@ struct BiometricAuth {
 
     static func getBiometricType() -> BiometricType {
         let authContext = LAContext()
-        _ = authContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+        _ = authContext.canEvaluatePolicy(.deviceOwnerAuthentication, error: nil)
 
         switch authContext.biometryType {
         case .faceID:
