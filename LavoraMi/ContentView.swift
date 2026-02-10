@@ -687,6 +687,10 @@ struct SettingsView: View{
     @AppStorage("enableNotifications") private var enableNotifications: Bool = true
     @AppStorage("linesFavorites") private var linesFavorites: [String] = []
     @AppStorage("preferredFilter") private var preferredFilter: FilterBy = .all
+    @AppStorage("showErrorMessages") var showErrorMessages: Bool = false
+    @AppStorage("showStrikeBanner") var showStrikeBanner: Bool = true
+    @AppStorage("requireFaceID") var requireFaceID: Bool = true
+    @AppStorage("linkOpenURL") var howToOpenLinks: linkOpenTypes = .inApp
     
     let metroLines = ["M1", "M2", "M3", "M4", "M5"]
     
@@ -984,6 +988,10 @@ struct SettingsView: View{
                     enableNotifications = true
                     preferredFilter = .all
                     linesFavorites = []
+                    showErrorMessages = false
+                    showStrikeBanner = true
+                    requireFaceID = true
+                    howToOpenLinks = .inApp 
                 }
             } message: {
                 Text("Sei sicuro di voler ripristinare le impostazioni?")
@@ -1362,13 +1370,6 @@ struct AdvancedOptionsView: View {
     @AppStorage("requireFaceID") var requireFaceID: Bool = true
     @AppStorage("linkOpenURL") var howToOpenLinks: linkOpenTypes = .inApp
     private var currentDeviceBiometric: BiometricType = BiometricAuth.getBiometricType()
-    
-    enum linkOpenTypes: String, CaseIterable, Identifiable{
-        case inApp = "In App"
-        case safari = "Safari"
-        
-        var id: String{self.rawValue}
-    }
     
     var body: some View {
         List{
@@ -3042,6 +3043,13 @@ struct InterchangeStation: Identifiable {
     let displayName: String
     let lines: [String]
     let typeOfInterchange: String
+}
+
+enum linkOpenTypes: String, CaseIterable, Identifiable{
+    case inApp = "In App"
+    case safari = "Safari"
+    
+    var id: String{self.rawValue}
 }
 
 func getColor(for line: String) -> Color {
