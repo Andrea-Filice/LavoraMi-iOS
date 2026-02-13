@@ -1388,6 +1388,20 @@ struct AdvancedOptionsView: View {
                 Toggle(isOn: $requireFaceID){
                     Label("Richiedi \(getBiometricTypeByEnum())", systemImage: (getBiometricTypeByEnum() == "Codice") ? "lock.fill" : getBiometricTypeByEnum().lowercased())
                 }
+                .onChange(of: requireFaceID) { oldValue, newValue in
+                    if(newValue == false){
+                        BiometricAuth.authenticate{
+                            print("FaceID Recognized!")
+                            requireFaceID = false
+                        } onFailure: { error in
+                            print("Error during read of FaceID")
+                            requireFaceID = true
+                        }
+                    }
+                    else{
+                        requireFaceID = requireFaceID
+                    }
+                }
             }
             Section(footer: Text("Seleziona la modalità in cui aprire i link.")){
                 Label("Apri link:", systemImage: "network")
