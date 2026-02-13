@@ -2634,12 +2634,15 @@ struct LineDetailView: View {
                 .padding(.bottom, 8)
                 
                 if selectedTab == .map {
-                    Map(initialPosition: .region(MKCoordinateRegion(
-                            center: centerCoordinate,
-                            span: MKCoordinateSpan(latitudeDelta: 0.15, longitudeDelta: 0.15)
-                        )),
-                        bounds: lombardyBounds
-                        ){
+                    Map(
+                        initialPosition: .region(
+                            MKCoordinateRegion(
+                                center: centerCoordinate,
+                                span: MKCoordinateSpan(latitudeDelta: 0.15, longitudeDelta: 0.15)
+                            )
+                        ),
+                        bounds: lombardyBounds,
+                        content: {
                             let lineColor: Color = getColor(for: lineName)
                             switch(lineName){
                                 case "M1":
@@ -2717,7 +2720,7 @@ struct LineDetailView: View {
                                         }
                                     }
                             }
-                        }
+                        })
                         .frame(maxWidth: .infinity)
                         .frame(maxHeight: .infinity)
                         .padding(.bottom, 100)
@@ -3381,3 +3384,4 @@ struct SafariView: UIViewControllerRepresentable {
 #Preview {
     ContentView()
 }
+
