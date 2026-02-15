@@ -3274,7 +3274,6 @@ extension WorkItem {
         
         if favorites.contains("Bus") {
             let isRubberTire = transport.contains("bus") || transport.contains("autobus")
-            
             let isMovibus = transport.contains("movibus") || linesLower.contains { $0.hasPrefix("z6") }
             let isStav = transport.contains("stav") || linesLower.contains { $0.hasPrefix("z5") }
             let isAutoguidovie = transport.contains("autoguidovie") || linesLower.contains {
@@ -3292,38 +3291,31 @@ extension WorkItem {
         }
         
         if favorites.contains("z5"){
-            if transport.contains("STAV") {return true}
-            if linesLower.contains(where: { $0.hasPrefix("z5") }) {return true}
+            if transport.contains("stav") { return true }
+            if linesLower.contains(where: { $0.hasPrefix("z5") }) { return true }
         }
         
-        if favorites.contains("z4"){
-            if transport.contains("Autoguidovie") {return true}
-            if linesLower.contains(where: { $0.hasPrefix("z4") }) {return true}
-        }
-
-        if favorites.contains("z2"){
-            if transport.contains("Autoguidovie") {return true}
-            if linesLower.contains(where: { $0.hasPrefix("z2") }) {return true}
-        }
-        
-        if favorites.contains("k"){
-            if transport.contains("Autoguidovie") {return true}
-            if linesLower.contains(where: { $0.hasPrefix("k") }) {return true}
-        }
-        
-        if favorites.contains("p"){
-            if transport.contains("Autoguidovie") {return true}
-            if linesLower.contains(where: { $0.hasPrefix("p") }) {return true}
+        if favorites.contains("z4") || favorites.contains("z2") ||
+           favorites.contains("k") || favorites.contains("p") {
+            if transport.contains("autoguidovie") { return true }
+            if linesLower.contains(where: {
+                $0.hasPrefix("z4") || $0.hasPrefix("z2") ||
+                $0.hasPrefix("k") || $0.hasPrefix("p")
+            }) {
+                return true
+            }
         }
         
         if favorites.contains("Tram") {
-            let isTram = transport.contains("tram") && !transport.contains("tram.fill.tunnel") && !transport.contains("metro")
+            let isTram = transport.contains("tram") &&
+                        !transport.contains("tram.fill.tunnel") &&
+                        !transport.contains("metro")
             if isTram { return true }
         }
         
         for workLine in self.lines {
             let cleanWorkLine = workLine.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-            
+            let upperLine = workLine.uppercased().trimmingCharacters(in: .whitespacesAndNewlines)
             
             for fav in favorites {
                 let cleanFav = fav.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
@@ -3332,11 +3324,11 @@ extension WorkItem {
                 }
             }
             
-            let upperLine = workLine.uppercased()
-            
             if favorites.contains("S") && upperLine.hasPrefix("S") {
                 let suffix = upperLine.dropFirst()
-                if !suffix.isEmpty && suffix.allSatisfy({ $0.isNumber }) { return true }
+                if !suffix.isEmpty && suffix.allSatisfy({ $0.isNumber }) {
+                    return true
+                }
             }
             
             if favorites.contains("R") && upperLine.hasPrefix("R") && !upperLine.hasPrefix("RE") {
