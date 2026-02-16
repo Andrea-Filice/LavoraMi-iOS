@@ -2037,6 +2037,8 @@ struct LinesView: View {
             LineInfo(name: "z251", branches: "Desio FS - Bovisio M. - Varedo - Limbiate - Senago", type: "Autoguidovie", waitMinutes: "", stations: []),
 
             // MARK: - Area Crema
+            LineInfo(name: "k208", branches: "Cremona - S.Daniele - Casalmaggiore", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "k214", branches: "Cremona - Pieve d'Olmi - Viadana", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "k501", branches: "Crema - Pandino - Milano S.Donato", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "k502", branches: "Crema - Agnadello - Rivolta - Milano S.Donato", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "k503", branches: "Crema - Rivolta d'Adda - Milano", type: "Autoguidovie", waitMinutes: "", stations: []),
@@ -2052,9 +2054,7 @@ struct LinesView: View {
             LineInfo(name: "k523", branches: "Crema - Cremosano - Trescore - Milano S.Donato", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "k524", branches: "Crema - Chieve - Milano S.Donato", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "k525", branches: "Crema - Palazzo P. - Vaiano - Milano S.Donato", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k601", branches: "Crema - Soncino", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k208", branches: "Cremona - S.Daniele - Casalmaggiore", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k214", branches: "Cremona - Pieve d'Olmi - Viadana", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "k601", branches: "Crema - Soncino", type: "Autoguidovie", waitMinutes: "", stations: [])
         ]
     }
     
