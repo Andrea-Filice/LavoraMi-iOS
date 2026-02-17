@@ -1547,7 +1547,6 @@ struct NotificationsView: View {
                 workScheduledNotifications = enableNotifications
                 workInProgressNotifications = enableNotifications
                 strikeNotifications = enableNotifications
-                print("-- INIZIO SYNCH DELLE NOTIFICHE --")
                 
                 //SYNC NOTIFICATIONS
                 viewModel.fetchVariables()
@@ -1561,7 +1560,6 @@ struct NotificationsView: View {
                     }
                     .onChange(of: workScheduledNotifications){
                         NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
-                        print("-- INIZIO SYNCH NOTIFICHE IN PROGRESS --")
                     }
                     .disabled(!enableNotifications)
                     
@@ -1570,7 +1568,6 @@ struct NotificationsView: View {
                     }
                     .onChange(of: workInProgressNotifications){
                         NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
-                        print("-- INIZIO SYNCH NOTIFICHE IN PROGRESS --")
                     }
                     .disabled(!enableNotifications)
                 }
