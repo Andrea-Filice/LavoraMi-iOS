@@ -1384,7 +1384,7 @@ struct AdvancedOptionsView: View {
                     Label("Mostra banner Scioperi", systemImage: "text.append")
                 }
             }
-            Section(footer: Text("Richiedi il \(getBiometricTypeByEnum()) per sbloccare la sezione del tuo Account.")){
+            Section(footer: Text("Richiedi \(getBiometricTypeByEnum()) per bloccare e sbloccare la sezione del tuo Account.")){
                 Toggle(isOn: $requireFaceID){
                     Label("Richiedi \(getBiometricTypeByEnum())", systemImage: (getBiometricTypeByEnum() == "Codice") ? "lock.fill" : getBiometricTypeByEnum().lowercased())
                 }
@@ -1612,8 +1612,10 @@ struct InfoView: View {
                     .font(.system(size: 35))
                     .bold()
             }
+            .padding(.bottom, 10)
             Text("\(Bundle.main.shortVersion) (Build \(Bundle.main.buildVersion))")
             Divider()
+                .padding(.top, 10)
             ScrollView{
                 Section(){
                     Text("Fonti Dati")
@@ -2000,58 +2002,42 @@ struct LinesView: View {
     
     var autoguidovie: [LineInfo] {
         [
-            LineInfo(name: "z401", branches: "Melzo FS - Gorgonzola M2", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z402", branches: "Cernusco S/N - San Felice - Peschiera B.", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z403", branches: "Melzo - Gessate M2 - Gorgonzola M2", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z404", branches: "Melzo - Inzago - Gessate M2", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z401", branches: "Melzo FS - Vignate - Villa Fiorita M2", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z402", branches: "Cernusco M2 - Pioltello FS - S.Felice", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z403", branches: "Gorgonzola M2 - Melzo (Circolare)", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z404", branches: "Melzo FS - Inzago - Gessate M2", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "z405", branches: "Gessate M2 - Cassano d'Adda - Treviglio", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z406", branches: "Gessate M2 - Inzago - Cassano d'Adda", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z407", branches: "Gessate M2 - Bellinzago L. - Cassano d'Adda", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z409", branches: "Rodano - Settala - Liscate - Truccazzano", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z410", branches: "Liscate - Rodano - Pantigliate", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z411", branches: "Melzo FS - Liscate - Pantigliate - S.Donato M3", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z412", branches: "Zelo B.P. - Comazzo - Merlino - S.Donato M3", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z413", branches: "Paullo - Mombretto - S.Donato M3", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z415", branches: "S.Donato M3 - Paullo - Zelo B.P.", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z418", branches: "San Giuliano M. - Melegnano - Riozzo", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z419", branches: "Paullo - Melzo - Gorgonzola", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z420", branches: "S.Zenone al L. - Melegnano - S.Donato M3", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z431", branches: "Melegnano - Vizzolo P. - Carpiano - Locate T.", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z406", branches: "Trecella FS - Bellinzago - Gessate M2", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z407", branches: "Gorgonzola M2 - Truccazzano", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z409", branches: "Rodano - S. Felice - Linate Aereoporto", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z410", branches: "Pantigliate - Peschiera - S.Donato M3", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z411", branches: "Melzo FS - Settala - Pantigliate - S.Donato M3", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z412", branches: "Zelo B.P. - Paullo - S.Donato M3", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z413", branches: "Tribiano - S.Donato M3", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z415", branches: "Melegnano - Dresano - S.Donato M3", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z418", branches: "S.Zenone FS - Casalmaiocco", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z419", branches: "Paullo - Melzo - Gorgonzola M2", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z420", branches: "Vizzolo - Melegnano - S.Donato M3", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z431", branches: "Melegnano FS - Carpiano/Cerro L.", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z432", branches: "Melegnano FS - Dresano  - Vizzolo (Circolare)", type: "Autoguidovie", waitMinutes: "", stations: []),
 
-            // MARK: - Area Monza e Brianza
-            LineInfo(name: "z219", branches: "Paderno D. - Nova M. - Cinisello B. - Monza", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z221", branches: "Sesto S.G. - Monza - Carate B. - Mariano C.", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z203", branches: "Muggiò - Monza FS - Cologno Nord M2", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z205", branches: "Limbiate Mombello - Varedo - Monza FS", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z209", branches: "Cesano FN - Desio - Lissone", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z219", branches: "Monza FS - Muggiò - Paderno Dugnano", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z221", branches: "Sesto S.G. - Monza FS - Carate", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "z222", branches: "Monza FS - S.Fruttuoso - Sesto S.G.", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z225", branches: "Sesto S.G. - Nova M. - Paderno D.", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z227", branches: "Monza - Lissone - Muggiò - Cinisello - Sesto S.G.", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z225", branches: "Sesto S.G. - Cinisello B. - Nova M.se", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z227", branches: "Monza H/Lissone FS - Muggiò - Cinisello", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "z228", branches: "Seregno FS - Lissone - Monza FS", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z229", branches: "Paderno Dugnano - Cinisello B.", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z231", branches: "Desio - Seregno FS - Carate B.", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z232", branches: "Desio - Seregno - Carate B. - Besana B.", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z229", branches: "Paderno ITC - Cusano - Cinisello B.", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z231", branches: "Carate - Giussano - Seregno FS - Desio", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z232", branches: "Desio - Seregno - Carate - Besana FS", type: "Autoguidovie", waitMinutes: "", stations: []),
             LineInfo(name: "z233", branches: "Triuggio - Albiate - Seregno FS", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z234", branches: "Vedano al L. - Biassono - Macherio - Lissone - Muggiò", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z250", branches: "Desio FS - Cesano M. - Limbiate", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "z251", branches: "Desio FS - Bovisio M. - Varedo - Limbiate - Senago", type: "Autoguidovie", waitMinutes: "", stations: []),
-
-            // MARK: - Area Crema
-            LineInfo(name: "k208", branches: "Cremona - S.Daniele - Casalmaggiore", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k214", branches: "Cremona - Pieve d'Olmi - Viadana", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k501", branches: "Crema - Pandino - Milano S.Donato", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k502", branches: "Crema - Agnadello - Rivolta - Milano S.Donato", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k503", branches: "Crema - Rivolta d'Adda - Milano", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k505", branches: "Crema - Treviglio - Milano", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k506", branches: "Crema - Pandino - Milano Bisceglie", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k507", branches: "Crema - Mediglia - Milano", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k510", branches: "Rivolta d'Adda - Pioltello - Linate", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k511", branches: "Vailate - Melzo - Linate - Milano S.Donato", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k512", branches: "Crema - Spino d'Adda - Milano S.Donato", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k520", branches: "Crema - Magnacavallo", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k521", branches: "Crema - Milano S.Donato (Diretta)", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k522", branches: "Crema - Montodine - S.Zenone - Milano S.Donato", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k523", branches: "Crema - Cremosano - Trescore - Milano S.Donato", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k524", branches: "Crema - Chieve - Milano S.Donato", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k525", branches: "Crema - Palazzo P. - Vaiano - Milano S.Donato", type: "Autoguidovie", waitMinutes: "", stations: []),
-            LineInfo(name: "k601", branches: "Crema - Soncino", type: "Autoguidovie", waitMinutes: "", stations: [])
+            LineInfo(name: "z234", branches: "Vedano al L. - Lissone - Muggiò", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z242", branches: "Desio - Seregno FS - Renate", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z250", branches: "Lissone FS - Desio FS - Cesano FN", type: "Autoguidovie", waitMinutes: "", stations: []),
+            LineInfo(name: "z251", branches: "Desio FS - Bovisio M. - Limbiate - Cesano FN", type: "Autoguidovie", waitMinutes: "", stations: []),
         ]
     }
     
@@ -2822,19 +2808,17 @@ struct LineSmallDetailedView: View {
         .init(key: "Abbiategrasso Vittorio Veneto", displayName: "Abbiategrasso V. Veneto", lines: ["z551", "z552", "z553", "z555", "z560"], typeOfInterchange: "bus.fill"),
         .init(key: "Abbiategrasso FS", displayName: "Abbiategrasso FS", lines: ["R31", "z551", "z552", "z553", "z555", "z556", "z560"], typeOfInterchange: "train.side.front.car"),
         .init(key: "Albairate Vermezzo FS", displayName: "Albairate Vermezzo FS", lines: ["R31", "S9", "S19"], typeOfInterchange: "train.side.front.car"),
-        .init(key: "Gorgonzola", displayName: "Gorgonzola MM", lines: ["M2", "z401", "z403"], typeOfInterchange: "tram.fill.tunnel"),
-        .init(key: "Cernusco", displayName: "Cernusco sul Naviglio MM", lines: ["M2"], typeOfInterchange: "tram.fill.tunnel"),
-        .init(key: "Gessate", displayName: "Gessate MM", lines: ["M2", "z404", "z405", "z406", "z407"], typeOfInterchange: "tram.fill.tunnel"),
-        .init(key: "Donato", displayName: "San Donato MM", lines: ["M3", "z411", "z412", "z413", "z415", "z420", "k501", "k502", "k511", "k512", "k521", "k522", "k523", "k524", "k525"], typeOfInterchange: "tram.fill.tunnel"),
-        .init(key: "Sesto", displayName: "Sesto San Giovanni FS", lines: ["M1", "R13", "R14", "RE8", "S7", "S8", "S9", "S11", "z221", "z222", "z225", "z227"], typeOfInterchange: "train.side.front.car"),
-        .init(key: "Monza FS", displayName: "Monza FS", lines: ["R13", "R14", "RE8", "RE80", "S7", "S8", "S9", "S11", "z228"], typeOfInterchange: "train.side.front.car"),
-        .init(key: "Seregno FS", displayName: "Seregno FS", lines: ["RE80", "S9", "S11", "z228", "z231", "z233"], typeOfInterchange: "train.side.front.car"),
-        .init(key: "Desio FS", displayName: "Desio FS", lines: ["RE80", "S9", "S11", "z250", "z251"], typeOfInterchange: "train.side.front.car"),
-        .init(key: "Crema", displayName: "Crema FS", lines: ["R6", "k503", "k505", "k506", "k507", "k512", "k520", "k521", "k522", "k523", "k524", "k525", "k601"], typeOfInterchange: "bus.fill"),
-        .init(key: "Linate", displayName: "Linate Aereoporto", lines: ["M4", "k510"], typeOfInterchange: "airplane.departure"),
-        .init(key: "Pavia FS", displayName: "Pavia FS", lines: ["R34", "R35", "R36", "R37", "RE13", "S13", "Pavia 2", "Pavia 3", "Pavia 4", "Pavia 6", "Pavia 7"], typeOfInterchange: "train.side.front.car"),
-        .init(key: "Famagosta", displayName: "Famagosta MM", lines: ["M2"], typeOfInterchange: "tram.fill.tunnel"),
-        .init(key: "Cremona", displayName: "Cremona", lines: ["k208", "k214"], typeOfInterchange: "bus.fill")
+        .init(key: "Melzo FS", displayName: "Melzo FS", lines: ["R4", "S5", "S6", "z401"], typeOfInterchange: "train.side.front.car"),
+        .init(key: "Pioltello FS", displayName: "Pioltello Limito FS", lines: ["R4", "RE2", "RE6", "S5", "S6", "z402"], typeOfInterchange: "train.side.front.car"),
+        .init(key: "Gorgonzola", displayName: "Gorgonzola M2", lines: ["M2", "z403", "z407", "z419"], typeOfInterchange: "tram.fill.tunnel"),
+        .init(key: "Gessate", displayName: "Gessate M2", lines: ["M2", "z405", "z406"], typeOfInterchange: "tram.fill.tunnel"),
+        .init(key: "Linate Aereoporto", displayName: "Linate Aereoporto", lines: ["M4", "z409"], typeOfInterchange: "airplane.departure"),
+        .init(key: "Donato", displayName: "San Donato M3", lines: ["M3", "z410", "z411", "z412", "z413", "z415", "z420"], typeOfInterchange: "tram.fill.tunnel"),
+        .init(key: "Melegnano FS", displayName: "Melegnano FS", lines: ["REG", "S1", "S12", "z431", "z432"], typeOfInterchange: "train.fill.tunnel"),
+        .init(key: "Monza FS", displayName: "Monza FS", lines: ["R7", "R13", "R14", "RE8", "RE80", "S7", "S8", "S9", "S11", "z203", "z205", "z219", "z221", "z222", "z228"], typeOfInterchange: "train.side.front.car"),
+        .init(key: "Sesto S.G", displayName: "Sesto San Giovanni FS M1", lines: ["M1", "R13", "R14", "RE8", "S7", "S8", "S9", "S11", "z221", "z222", "z225"], typeOfInterchange: "train.side.front.car"),
+        .init(key: "Seregno", displayName: "Seregno FS", lines: ["RE80", "S9", "S11", "z231", "z232", "z233", "z242"], typeOfInterchange: "train.side.front.car"),
+        .init(key: "Desio FS", displayName: "Desio FS", lines: ["RE80", "S9", "S11", "z250", "z251"], typeOfInterchange: "train.side.front.car")
     ]
     
     var activeInterchange: InterchangeStation? {
@@ -2943,8 +2927,6 @@ struct LineSmallDetailedView: View {
                             .font(.title3)
                             .multilineTextAlignment(.leading)
                     }
-                    
-                    Spacer()
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
@@ -2972,6 +2954,7 @@ struct LineSmallDetailedView: View {
                     .buttonStyle(.plain)
                     .padding(.horizontal)
                     .padding(.bottom, 8)
+                    .padding(.top, 10)
                 }
                 VStack {
                     ScrollView {
@@ -3169,7 +3152,7 @@ func getColor(for line: String) -> Color {
         case "M5": return Color(red: 165/255, green: 147/255, blue: 198/255)
         
         //BUS LINES
-        case _ where line.contains("z") || line.contains("k"):
+        case _ where line.contains("z"):
             return Color(red: 28/255, green: 28/255, blue: 1)
         case _ where line.contains("Filobus"):
             return Color(red: 101/255, green: 179/255, blue: 46/255)
@@ -3274,7 +3257,7 @@ extension WorkItem {
             let isMovibus = transport.contains("movibus") || linesLower.contains { $0.hasPrefix("z6") }
             let isStav = transport.contains("stav") || linesLower.contains { $0.hasPrefix("z5") }
             let isAutoguidovie = transport.contains("autoguidovie") || linesLower.contains {
-                $0.hasPrefix("z4") || $0.hasPrefix("z2") || $0.hasPrefix("k") || $0.hasPrefix("p")
+                $0.hasPrefix("z4") || $0.hasPrefix("z2")
             }
             
             if isRubberTire && !isMovibus && !isStav && !isAutoguidovie {
@@ -3292,12 +3275,10 @@ extension WorkItem {
             if linesLower.contains(where: { $0.hasPrefix("z5") }) { return true }
         }
         
-        if favorites.contains("z4") || favorites.contains("z2") ||
-           favorites.contains("k") || favorites.contains("p") {
+        if favorites.contains("z4") || favorites.contains("z2") {
             if transport.contains("autoguidovie") { return true }
             if linesLower.contains(where: {
-                $0.hasPrefix("z4") || $0.hasPrefix("z2") ||
-                $0.hasPrefix("k") || $0.hasPrefix("p")
+                $0.hasPrefix("z4") || $0.hasPrefix("z2")
             }) {
                 return true
             }
