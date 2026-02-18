@@ -235,6 +235,7 @@ struct MainView: View{
     @State private var selectedFilter: FilterBy = .all
     @State private var searchInput: String = ""
     @State private var alreadyRefreshed: Bool = false
+    
     @ObservedObject var viewModel: WorkViewModel
     @FocusState private var isSearchFocused: Bool
     
@@ -296,12 +297,21 @@ struct MainView: View{
                     Spacer()
                     
                     Button(action: {
+                        viewModel.isLoading = true
                         viewModel.fetchWorks()
                         viewModel.fetchVariables()
                     }) {
-                        Image(systemName: "arrow.clockwise")
-                            .font(.title2)
-                            .fontWeight(.semibold)
+                        if(viewModel.isLoading){
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                                .scaleEffect(1.0)
+                                .tint(.red)
+                        }
+                        else{
+                            Image(systemName: "arrow.clockwise")
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                        }
                     }
                 }
                 .padding(.horizontal)
@@ -458,7 +468,7 @@ struct MainView: View{
                             ScrollView {
                                 LazyVStack(spacing: 12) {
                                     if(filteredItems.isEmpty){
-                                        Text("Nessuna corrispondenza trovata.")
+                                        Text("Nessun lavoro trovato per il filtro selezionato.")
                                     }
                                     else{
                                         ForEach(filteredItems) { item in
@@ -1958,19 +1968,19 @@ struct LinesView: View {
     
     var bus : [LineInfo] {
         [
-            LineInfo(name: "z601", branches: "Legnano - Rho - Milano Molino Dorino", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z601", branches: "Legnano - Rho - Molino Dorino M1", type: "Movibus", waitMinutes: "", stations: []),
             LineInfo(name: "z602", branches: "Legnano - Milano Cadorna FN", type: "Movibus", waitMinutes: "", stations: []),
             LineInfo(name: "z603", branches: "Vittore Olona / Nerviano - Milano Cadorna FN", type: "Movibus", waitMinutes: "", stations: []),
             LineInfo(name: "z6C3", branches: "Vittore Olona - Cerro Maggiore - Milano Cadorna FN", type: "Movibus", waitMinutes: "", stations: []),
-            LineInfo(name: "z606", branches: "Cerro Maggiore - Rho - Milano Molino Dorino", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z606", branches: "Cerro Maggiore - Rho - Molino Dorino M1", type: "Movibus", waitMinutes: "", stations: []),
             LineInfo(name: "z611", branches: "Legnano - Canegrate - Parabiago", type: "Movibus", waitMinutes: "", stations: []),
             LineInfo(name: "z612", branches: "Legnano - Cerro Maggiore - Arese", type: "Movibus", waitMinutes: "", stations: []),
             LineInfo(name: "z616", branches: "Pregnana Milanese - Rho", type: "Movibus", waitMinutes: "", stations: []),
-            LineInfo(name: "z617", branches: "Origgio / Lainate - Milano Molino Dorino ", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z617", branches: "Origgio / Lainate - Molino Dorino M1 ", type: "Movibus", waitMinutes: "", stations: []),
             LineInfo(name: "z618", branches: "Vanzago - Pogliano M. - Rho", type: "Movibus", waitMinutes: "", stations: []),
             LineInfo(name: "z619", branches: "Pogliano M. - Plesso IST Maggiolini", type: "Movibus", waitMinutes: "", stations: []),
-            LineInfo(name: "z620", branches: "Magenta - Vittuone - Milano Molino Dorino", type: "Movibus", waitMinutes: "", stations: []),
-            LineInfo(name: "z621", branches: "Cuggiono - Ossona - Milano Molino Dorino", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z620", branches: "Magenta - Vittuone - Molino Dorino M1", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z621", branches: "Cuggiono - Ossona - Molino Dorino M1", type: "Movibus", waitMinutes: "", stations: []),
             LineInfo(name: "z622", branches: "Cuggiono - Ossona - Cornaredo", type: "Movibus", waitMinutes: "", stations: []),
             LineInfo(name: "z625", branches: "Busto Arsizio - Busto Garolfo", type: "Movibus", waitMinutes: "", stations: []),
             LineInfo(name: "z627", branches: "Castano Primo - Legnano", type: "Movibus", waitMinutes: "", stations: []),
@@ -1981,14 +1991,14 @@ struct LinesView: View {
             LineInfo(name: "z644", branches: "Arconate - Parabiago", type: "Movibus", waitMinutes: "", stations: []),
             LineInfo(name: "z646", branches: "Magenta - Castano Primo", type: "Movibus", waitMinutes: "", stations: []),
             LineInfo(name: "z647", branches: "Cornaredo - Castano Primo", type: "Movibus", waitMinutes: "", stations: []),
-            LineInfo(name: "z648", branches: "Arconate - Milano Molino Dorino", type: "Movibus", waitMinutes: "", stations: []),
-            LineInfo(name: "z649", branches: "Magenta - Arluno - Milano Molino Dorino", type: "Movibus", waitMinutes: "", stations: [])
+            LineInfo(name: "z648", branches: "Arconate - Molino Dorino M1", type: "Movibus", waitMinutes: "", stations: []),
+            LineInfo(name: "z649", branches: "Magenta - Arluno - Molino Dorino M1", type: "Movibus", waitMinutes: "", stations: [])
         ]
     }
     
     var stav: [LineInfo] {
         [
-            LineInfo(name: "z551", branches: "Abbiategrasso Vittorio Veneto - Milano Bisceglie", type: "STAV", waitMinutes: "", stations: []),
+            LineInfo(name: "z551", branches: "Abbiategrasso Vittorio Veneto - Bisceglie M1", type: "STAV", waitMinutes: "", stations: []),
             LineInfo(name: "z552", branches: "Abbiategrasso Vittorio Veneto - S. Stefano Ticino", type: "STAV", waitMinutes: "", stations: []),
             LineInfo(name: "z553", branches: "Abbiategrasso - Rosate - Milano Romolo", type: "STAV", waitMinutes: "", stations: []),
             LineInfo(name: "z554", branches: "Albairate - Albairate Vermezzo FS - Bubbiano", type: "STAV", waitMinutes: "", stations: []),
@@ -1996,7 +2006,7 @@ struct LinesView: View {
             LineInfo(name: "z556", branches: "Abbiategrasso FS - Motta Visconti", type: "STAV", waitMinutes: "", stations: []),
             LineInfo(name: "z557", branches: "Gaggiano De Gasperi - Gaggiano FS - San Vito", type: "STAV", waitMinutes: "", stations: []),
             LineInfo(name: "z559", branches: "Abbiategrasso Stazione FS - Magenta FS", type: "STAV", waitMinutes: "", stations: []),
-            LineInfo(name: "z560", branches: "Abbiategrasso FS - Corsico - Milano Bisceglie", type: "STAV", waitMinutes: "", stations: []),
+            LineInfo(name: "z560", branches: "Abbiategrasso FS - Corsico - Bisceglie M1", type: "STAV", waitMinutes: "", stations: []),
         ]
     }
     
@@ -2801,7 +2811,7 @@ struct LineSmallDetailedView: View {
         .init(key: "Rho", displayName: "Rho FS", lines: ["S5", "S6", "S11", "z616", "z618"], typeOfInterchange: "train.side.front.car"),
         .init(key: "Busto Garolfo", displayName: "Busto Garolfo", lines: ["z625", "z627", "z644", "z647", "z648", "z649"], typeOfInterchange: "bus.fill"),
         .init(key: "Legnano", displayName: "Legnano", lines: ["z601", "z602", "z611", "z612", "z642", "z627"], typeOfInterchange: "bus.fill"),
-        .init(key: "Bisceglie", displayName: "Bisceglie MM", lines: ["M1", "z551", "z560", "k506"], typeOfInterchange: "tram.fill.tunnel"),
+        .init(key: "Bisceglie", displayName: "Bisceglie MM", lines: ["M1", "z551", "z560"], typeOfInterchange: "tram.fill.tunnel"),
         .init(key: "Romolo", displayName: "Romolo FS", lines: ["M2", "S9", "S19", "R31"], typeOfInterchange: "train.side.front.car"),
         .init(key: "S. Stefano Ticino", displayName: "Santo Stefano Ticino - Corbetta", lines: ["S6"], typeOfInterchange: "train.side.front.car"),
         .init(key: "Magenta", displayName: "Magenta FS", lines: ["S6", "RV", "z641", "z646", "z559"], typeOfInterchange: "train.side.front.car"),
