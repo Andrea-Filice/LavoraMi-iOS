@@ -230,6 +230,7 @@ struct MainView: View{
     @AppStorage("preferredFilter") private var preferredFilter: FilterBy = .all
     @AppStorage("showErrorMessages") var showErrorMessages: Bool = false
     @AppStorage("showStrikeBanner") var showStrikeBanner: Bool = true
+    @AppStorage("showDebugInfos") var showDebugInfos: Bool = false
     
     @State private var closedStrike: Bool = false
     @State private var selectedFilter: FilterBy = .all
@@ -480,9 +481,13 @@ struct MainView: View{
                                     }
                                 }
                                 .padding(.vertical, 8)
-                            }
-                            .refreshable {
-                                viewModel.fetchWorks()
+                                if(showDebugInfos){
+                                    Divider()
+                                    Text("Totale lavori caricati: \(filteredItems.count)")
+                                        .bold()
+                                        .padding(.top, 10)
+                                        .padding(.bottom, 10)
+                                }
                             }
                         }
                     }
@@ -1382,6 +1387,7 @@ struct AdvancedOptionsView: View {
     @AppStorage("showErrorMessages") var showErrorMessages: Bool = false
     @AppStorage("showStrikeBanner") var showStrikeBanner: Bool = true
     @AppStorage("requireFaceID") var requireFaceID: Bool = true
+    @AppStorage("showDebugInfos") var showDebugInfos: Bool = false
     @AppStorage("linkOpenURL") var howToOpenLinks: linkOpenTypes = .inApp
     private var currentDeviceBiometric: BiometricType = BiometricAuth.getBiometricType()
     @State private var presentedCacheAlert = false
@@ -1415,6 +1421,11 @@ struct AdvancedOptionsView: View {
                     else{
                         requireFaceID = requireFaceID
                     }
+                }
+            }
+            Section(footer: Text("Mostra alla fine della pagina Home, quanti lavori sono stati caricati in totale.")){
+                Toggle(isOn: $showDebugInfos){
+                    Label("Mostra più Informazioni", systemImage: "square.and.arrow.down.on.square.fill")
                 }
             }
             Section(footer: Text("Seleziona la modalità in cui aprire i link.")){
@@ -1520,6 +1531,7 @@ struct NotificationsView: View {
     @AppStorage("strikeNotifications") var strikeNotifications: Bool = true
     @AppStorage("enableNotifications") var enableNotifications: Bool = true
     @AppStorage("linesFavorites") var linesFavorites: [String] = []
+    @AppStorage("notificationConsent") var notificationConsent: Bool = false
     
     static var defaultTime: Date { //MARK: SET DEFAULT VALUE OF DATEPICKER
         var components = DateComponents()
@@ -1534,79 +1546,105 @@ struct NotificationsView: View {
     
     var body: some View {
         VStack(spacing: 10) {
-            VStack(alignment: .leading, spacing: 8) {
-                Toggle(isOn: $enableNotifications) {
-                    HStack (spacing: 15){
-                        Image(systemName: "bell.fill")
-                            .foregroundStyle(.red)
-                            .scaleEffect(1.5)
-                        Text("Notifiche")
-                            .font(.system(size: 20))
-                            .bold()
+            if(notificationConsent) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Toggle(isOn: $enableNotifications) {
+                        HStack (spacing: 15){
+                            Image(systemName: "bell.fill")
+                                .foregroundStyle(.red)
+                                .scaleEffect(1.5)
+                            Text("Notifiche")
+                                .font(.system(size: 20))
+                                .bold()
+                        }
                     }
+                    .tint(.red)
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(12)
+                    .disabled(!notificationConsent)
+                    
+                    Text("Imposta tutte le notifiche su uno stato.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal)
                 }
-                .tint(.red)
-                .padding()
-                .background(Color(.secondarySystemBackground))
-                .cornerRadius(12)
-                
-                Text("Imposta tutte le notifiche su uno stato.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal)
-            }
-            .padding(.top, 40)
-            .padding(.horizontal)
-            .onChange(of: enableNotifications) { newValue in
-                workScheduledNotifications = enableNotifications
-                workInProgressNotifications = enableNotifications
-                strikeNotifications = enableNotifications
-                
-                //SYNC NOTIFICATIONS
-                viewModel.fetchVariables()
-                NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
+                .padding(.top, 40)
+                .padding(.horizontal)
+                .onChange(of: enableNotifications) { newValue in
+                    workScheduledNotifications = enableNotifications
+                    workInProgressNotifications = enableNotifications
+                    strikeNotifications = enableNotifications
+                    
+                    //SYNC NOTIFICATIONS
+                    viewModel.fetchVariables()
+                    NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
+                }
             }
 
-            List {
-                Section("Notifiche Lavori") {
-                    Toggle(isOn: $workScheduledNotifications) {
-                        Label("Notifiche Inizio Lavori", systemImage: "bell.badge.fill")
-                    }
-                    .onChange(of: workScheduledNotifications){
-                        NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
-                    }
-                    .disabled(!enableNotifications)
-                    
-                    Toggle(isOn: $workInProgressNotifications) {
-                        Label("Notifiche Fine Lavori", systemImage: "bell.badge.fill")
-                    }
-                    .onChange(of: workInProgressNotifications){
-                        NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
-                    }
-                    .disabled(!enableNotifications)
-                }
-                
-                Section("Notifiche Scioperi") {
-                    Toggle(isOn: $strikeNotifications) {
-                        Label("Notifiche Scioperi", systemImage: "bell.badge.waveform.fill")
-                    }
-                    .onChange(of: strikeNotifications){
-                        viewModel.fetchVariables()
-                        print("-- INIZIO SYNCH NOTIFICHE STRIKE --")
-                    }
-                    .disabled(!enableNotifications)
-                }
-                Section(header: Text("Impostazioni Notifiche"), footer: Text("Modifica l'orario di arrivo delle notifiche.")){
-                    VStack{
-                        DatePicker(selection: $dateSchedule, displayedComponents: .hourAndMinute){
-                            Label("Orario Notifiche", systemImage: "clock.badge.fill")
+            if(notificationConsent){
+                List {
+                    Section("Notifiche Lavori") {
+                        Toggle(isOn: $workScheduledNotifications) {
+                            Label("Notifiche Inizio Lavori", systemImage: "bell.badge.fill")
+                        }
+                        .onChange(of: workScheduledNotifications){
+                            NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
+                        }
+                        .disabled(!enableNotifications)
+                        
+                        Toggle(isOn: $workInProgressNotifications) {
+                            Label("Notifiche Fine Lavori", systemImage: "bell.badge.fill")
+                        }
+                        .onChange(of: workInProgressNotifications){
+                            NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
                         }
                         .disabled(!enableNotifications)
                     }
+                    
+                    Section("Notifiche Scioperi") {
+                        Toggle(isOn: $strikeNotifications) {
+                            Label("Notifiche Scioperi", systemImage: "bell.badge.waveform.fill")
+                        }
+                        .onChange(of: strikeNotifications){
+                            viewModel.fetchVariables()
+                            print("-- INIZIO SYNCH NOTIFICHE STRIKE --")
+                        }
+                        .disabled(!enableNotifications)
+                    }
+                    Section(header: Text("Impostazioni Notifiche"), footer: Text("Modifica l'orario di arrivo delle notifiche.")){
+                        VStack{
+                            DatePicker(selection: $dateSchedule, displayedComponents: .hourAndMinute){
+                                Label("Orario Notifiche", systemImage: "clock.badge.fill")
+                            }
+                            .disabled(!enableNotifications)
+                        }
+                    }
                 }
+                .listStyle(.insetGrouped)
+                .scrollContentBackground(.hidden)
             }
-            .listStyle(.insetGrouped)
-            .scrollContentBackground(.hidden)
+            else {
+                Label {
+                    Text("Permesso Negato")
+                        .font(.system(size: 25))
+                } icon: {
+                    Image(systemName: "bell.slash.fill")
+                        .foregroundStyle(.red)
+                        .font(.system(size: 25))
+                }
+                
+                Text("Non hai dato il permesso per ricevere notifiche. Vai su Impostazioni > App > LavoraMi ed attiva le notifiche.")
+                    .padding()
+                    .font(.system(size: 13))
+                    .bold()
+                
+                Link("Apri Impostazioni", destination: URL(string: UIApplication.openSettingsURLString)!)
+                    .tint(.red)
+            }
+        }
+        .onAppear{
+            NotificationManager.shared.getPermissionOfNotifications()
         }
         .background(Color(.systemBackground))
         .navigationTitle("Notifiche")

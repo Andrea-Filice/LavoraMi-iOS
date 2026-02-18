@@ -14,6 +14,7 @@ class NotificationManager {
     @AppStorage("workInProgressNotifications") var workInProgressNotifications: Bool = true
     @AppStorage("strikeNotifications") var strikeNotifications: Bool = true
     @AppStorage("enableNotifications") var enableNotifications: Bool = true
+    @AppStorage("notificationConsent") var notificationConsent: Bool = false
     
     static var defaultTime: Date {
         var components = DateComponents()
@@ -29,8 +30,10 @@ class NotificationManager {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
             if granted {
                 print("Permesso notifiche concesso")
+                self.notificationConsent = true
             } else if let error = error {
                 print("Errore permessi: \(error.localizedDescription)")
+                self.notificationConsent = false
             }
         }
     }
@@ -130,61 +133,61 @@ class NotificationManager {
             }
         }
     }
-        func removeStrikeNotifications() {
-            let center = UNUserNotificationCenter.current()
-            let identifiers = ["STRIKE_DAY", "STRIKE_PRE"]
-            center.removePendingNotificationRequests(withIdentifiers: identifiers)
-            print("Notifiche sciopero rimosse.")
-        }
+    func removeStrikeNotifications() {
+        let center = UNUserNotificationCenter.current()
+        let identifiers = ["STRIKE_DAY", "STRIKE_PRE"]
+        center.removePendingNotificationRequests(withIdentifiers: identifiers)
+        print("Notifiche sciopero rimosse.")
+    }
 
-        func scheduleStrikeNotifications(dateString: String, companies: String, guaranteed: String) {
-            removeStrikeNotifications()
-            guard strikeNotifications && enableNotifications else { return }
+    func scheduleStrikeNotifications(dateString: String, companies: String, guaranteed: String) {
+        removeStrikeNotifications()
+        guard strikeNotifications && enableNotifications else { return }
+        
+        let center = UNUserNotificationCenter.current()
+        let calendar = Calendar.current
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+        dateFormatter.locale = Locale(identifier: "it_IT")
+        
+        guard let strikeDate = dateFormatter.date(from: dateString) else {
+            print("Errore: Impossibile convertire '\(dateString)'")
+            return
+        }
+        
+        var dayOfComponents = calendar.dateComponents([.year, .month, .day, .hour], from: strikeDate)
+        dayOfComponents.hour = 7
+        dayOfComponents.minute = 0
+        
+        if let fireDate = calendar.date(from: dayOfComponents), fireDate > Date() {
+            let content = UNMutableNotificationContent()
+            content.title = "🚫 Oggi Sciopero!"
+            content.body = "Oggi è previsto uno sciopero di \(companies), le fascie garantite \(guaranteed)."
+            content.sound = .default
             
-            let center = UNUserNotificationCenter.current()
-            let calendar = Calendar.current
+            let req = UNNotificationRequest(identifier: "STRIKE_DAY", content: content, trigger: UNCalendarNotificationTrigger(dateMatching: dayOfComponents, repeats: false))
+            center.add(req)
+            print("🔔 Sciopero programmato per il: \(fireDate.formatted())")
+        }
+        
+        if let dayBefore = calendar.date(byAdding: .day, value: -1, to: strikeDate) {
+            var dayBeforeComponents = calendar.dateComponents([.year, .month, .day, .hour], from: dayBefore)
+            dayBeforeComponents.hour = 18
+            dayBeforeComponents.minute = 0
             
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "dd/MM/yyyy"
-            dateFormatter.locale = Locale(identifier: "it_IT")
-            
-            guard let strikeDate = dateFormatter.date(from: dateString) else {
-                print("Errore: Impossibile convertire '\(dateString)'")
-                return
-            }
-            
-            var dayOfComponents = calendar.dateComponents([.year, .month, .day, .hour], from: strikeDate)
-            dayOfComponents.hour = 7
-            dayOfComponents.minute = 0
-            
-            if let fireDate = calendar.date(from: dayOfComponents), fireDate > Date() {
-                let content = UNMutableNotificationContent()
-                content.title = "🚫 Oggi Sciopero!"
-                content.body = "Oggi è previsto uno sciopero di \(companies), le fascie garantite \(guaranteed)."
-                content.sound = .default
+            if let firePreDate = calendar.date(from: dayBeforeComponents), firePreDate > Date() {
+                let contentPre = UNMutableNotificationContent()
+                contentPre.title = "⚠️ Domani Sciopero!"
+                contentPre.body = "Domani c'è sciopero per \(companies), le fascie garantite \(guaranteed)"
+                contentPre.sound = .default
                 
-                let req = UNNotificationRequest(identifier: "STRIKE_DAY", content: content, trigger: UNCalendarNotificationTrigger(dateMatching: dayOfComponents, repeats: false))
-                center.add(req)
-                print("🔔 Sciopero programmato per il: \(fireDate.formatted())")
-            }
-            
-            if let dayBefore = calendar.date(byAdding: .day, value: -1, to: strikeDate) {
-                var dayBeforeComponents = calendar.dateComponents([.year, .month, .day, .hour], from: dayBefore)
-                dayBeforeComponents.hour = 18
-                dayBeforeComponents.minute = 0
-                
-                if let firePreDate = calendar.date(from: dayBeforeComponents), firePreDate > Date() {
-                    let contentPre = UNMutableNotificationContent()
-                    contentPre.title = "⚠️ Domani Sciopero!"
-                    contentPre.body = "Domani c'è sciopero per \(companies), le fascie garantite \(guaranteed)"
-                    contentPre.sound = .default
-                    
-                    let reqPre = UNNotificationRequest(identifier: "STRIKE_PRE", content: contentPre, trigger: UNCalendarNotificationTrigger(dateMatching: dayBeforeComponents, repeats: false))
-                    center.add(reqPre)
-                    print("🔔 Preavviso sciopero programmato per il: \(firePreDate.formatted())")
-                }
+                let reqPre = UNNotificationRequest(identifier: "STRIKE_PRE", content: contentPre, trigger: UNCalendarNotificationTrigger(dateMatching: dayBeforeComponents, repeats: false))
+                center.add(reqPre)
+                print("🔔 Preavviso sciopero programmato per il: \(firePreDate.formatted())")
             }
         }
+    }
     
     func removeWorkAlerts(for work: WorkItem) {
         let center = UNUserNotificationCenter.current()
@@ -207,6 +210,23 @@ class NotificationManager {
                     print("Attivata notifica per inizio lavori: \(work.title)")
                 }
                 else{removeWorkAlerts(for: work)}
+            }
+        }
+    }
+    
+    func getPermissionOfNotifications(){
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                switch settings.authorizationStatus {
+                case .authorized, .provisional, .ephemeral:
+                    print("Stato notifiche: ATTIVO")
+                    self.notificationConsent = true
+                case .denied, .notDetermined:
+                    print("Stato notifiche: NEGATO o NON DETERMINATO")
+                    self.notificationConsent = false
+                @unknown default:
+                    self.notificationConsent = false
+                }
             }
         }
     }
