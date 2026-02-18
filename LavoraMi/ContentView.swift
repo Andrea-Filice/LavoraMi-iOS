@@ -496,6 +496,10 @@ struct MainView: View{
                     alreadyRefreshed = true
                 }
             }
+            .refreshable {
+                viewModel.fetchWorks()
+                viewModel.fetchVariables()
+            }
         }
     }
 }
