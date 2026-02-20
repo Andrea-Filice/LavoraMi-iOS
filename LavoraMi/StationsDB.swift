@@ -599,7 +599,7 @@ struct StationsDB {
         .init(name: "Zara", lines: ["M3", "M5"],typeOfInterchange: "tram.fill.tunnel"),
         .init(name: "Repubblica", lines: ["S1", "S2", "S5", "S6", "S12", "S13", "M3"], typeOfInterchange: "lightrail"),
         .init(name: "Lodi TIBB", lines: ["R31", "S9", "S19", "M3"], typeOfInterchange: "figure.walk"),
-        .init(name: "Rogoredo FS", lines: ["R34", "R38", "RE8", "RE11", "RE13", "S1", "S2", "S9", "S12", "S13", "S19", "M3"], typeOfInterchange: "lightrail"),
+        .init(name: "Rogoredo FS", lines: ["R31", "R34", "R38", "RE8", "RE11", "RE13", "S1", "S2", "S9", "S12", "S13", "S19", "M3"], typeOfInterchange: "lightrail"),
         .init(name: "San Cristoforo", lines: ["R31", "S9", "S19", "M4"], typeOfInterchange: "lightrail"),
         .init(name: "Sforza - Policlinico", lines: ["M3", "M4"], typeOfInterchange: "figure.walk"),
         .init(name: "Dateo", lines: ["S1", "S2", "S5", "S6", "S12", "S13", "M4"], typeOfInterchange: "tram.fill.tunnel"),
