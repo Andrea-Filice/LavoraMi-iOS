@@ -1817,7 +1817,7 @@ struct LineRow: View {
                                 .fill((typeOfTransport == "Tram") ? .orange : getColor(for: line))
                         )
 
-                    if(line == "MXP"){Text("\(typeOfTransport)")}
+                    if(line == "MXP1" || line == "MXP2"){Text("\(typeOfTransport)")}
                     else{Text("\(typeOfTransport) \(line)")}
                 }
                 .padding(.vertical, 4)
@@ -1949,8 +1949,8 @@ struct LinesView: View {
     
     var malpensaExpress: [LineInfo] {
         [
-            LineInfo(name: "MXP", branches: "Gallarate - Malpensa - Milano Centrale", type: "Malpensa Express 1", waitMinutes: "30 min.", stations: StationsDB.mxp1),
-            LineInfo(name: "MXP", branches: "Malpensa - Milano Cadorna", type: "Malpensa Express 2", waitMinutes: "30 min.", stations: StationsDB.mxp2),
+            LineInfo(name: "MXP1", branches: "Gallarate - Malpensa - Milano Centrale", type: "Malpensa Express 1", waitMinutes: "30 min.", stations: StationsDB.mxp1),
+            LineInfo(name: "MXP2", branches: "Malpensa - Milano Cadorna", type: "Malpensa Express 2", waitMinutes: "30 min.", stations: StationsDB.mxp2),
         ]
     }
     
@@ -2489,7 +2489,7 @@ struct LineDetailView: View {
                                     .fill((typeOfTransport == "Tram") ? .orange : getColor(for: lineName))
                             )
                         
-                        if(lineName == "MXP"){
+                        if(lineName == "MXP1" || lineName == "MXP2"){
                             Text("\(typeOfTransport)")
                                 .font(.system(size: 30))
                                 .minimumScaleFactor(0.5)
