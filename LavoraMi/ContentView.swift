@@ -832,12 +832,25 @@ struct SettingsView: View{
                         Label("Linee Trenord", systemImage: "train.side.front.car")
                     }
                     DisclosureGroup(isExpanded: $expandedATM){
-                        DisclosureGroup(isExpanded: $expandedATMLines) {
-                            ForEach(metroLines, id: \.self) { line in
-                                LineFavouritesRow(line: line, favorites: $linesFavorites, viewModel: viewModel)
-                            }
-                        } label: {
+                        HStack{
                             Label("Linee Metro", systemImage: "tram.fill.tunnel")
+                            Spacer()
+                            Button(action: {
+                                let generator = UIImpactFeedbackGenerator(style: .light)
+                                generator.impactOccurred()
+                                
+                                if linesFavorites.contains("Metro") {
+                                    linesFavorites.removeAll { $0 == "Metro" }
+                                } else {
+                                    linesFavorites.append("Metro")
+                                }
+                                NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
+                            }) {
+                                Image(systemName: linesFavorites.contains("Metro") ? "star.fill" : "star")
+                                    .font(.title3)
+                                    .foregroundColor(linesFavorites.contains("Metro") ? .orange : .gray)
+                            }
+                            .buttonStyle(.borderless)
                         }
                         HStack{
                             Label("Linee Tram", systemImage: "tram.fill")
@@ -930,22 +943,16 @@ struct SettingsView: View{
                             let generator = UIImpactFeedbackGenerator(style: .light)
                             generator.impactOccurred()
                             
-                            if linesFavorites.contains("z4") {
-                                linesFavorites.removeAll { $0 == "z4" }
-                                linesFavorites.removeAll { $0 == "z2" }
-                                linesFavorites.removeAll { $0 == "k" }
-                                linesFavorites.removeAll { $0 == "p" }
+                            if linesFavorites.contains("Autoguidovie") {
+                                linesFavorites.removeAll { $0 == "Autoguidovie" }
                             } else {
-                                linesFavorites.append("z4")
-                                linesFavorites.append("z2")
-                                linesFavorites.append("k")
-                                linesFavorites.append("p")
+                                linesFavorites.append("Autoguidovie")
                             }
                             NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: linesFavorites)
                         }) {
-                            Image(systemName: linesFavorites.contains("z4") ? "star.fill" : "star")
+                            Image(systemName: linesFavorites.contains("Autoguidovie") ? "star.fill" : "star")
                                 .font(.title3)
-                                .foregroundColor(linesFavorites.contains("z4") ? .orange : .gray)
+                                .foregroundColor(linesFavorites.contains("Autoguidovie") ? .orange : .gray)
                         }
                         .buttonStyle(.borderless)
                     }
@@ -1014,6 +1021,9 @@ struct SettingsView: View{
                 }
             } message: {
                 Text("Sei sicuro di voler ripristinare le impostazioni?")
+            }
+            .onAppear{
+                print(linesFavorites)
             }
         }
     }
@@ -1771,48 +1781,6 @@ struct InfoView: View {
                 }
             }
         }
-    }
-}
-
-struct LineFavouritesRow: View {
-    let line: String
-    @Binding var favorites: [String]
-    @StateObject var viewModel: WorkViewModel
-    
-    var body: some View {
-        HStack(spacing: 12) {
-            Text(line)
-                .foregroundStyle(.white)
-                .font(.system(size: 12, weight: .bold))
-                .padding(.vertical, 4)
-                .padding(.horizontal, 8)
-                .background(
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(getColor(for: line))
-                )
-            
-            Text("Metro \(line)")
-            
-            Spacer()
-            
-            Button(action: {
-                let generator = UIImpactFeedbackGenerator(style: .light)
-                generator.impactOccurred()
-                
-                if favorites.contains(line) {
-                    favorites.removeAll { $0 == line }
-                } else {
-                    favorites.append(line)
-                }
-                NotificationManager.shared.syncNotifications(for: viewModel.items, favorites: favorites)
-            }) {
-                Image(systemName: favorites.contains(line) ? "star.fill" : "star")
-                    .font(.title3)
-                    .foregroundColor(favorites.contains(line) ? .orange : .gray)
-            }
-            .buttonStyle(.borderless)
-        }
-        .padding(.vertical, 4)
     }
 }
 
@@ -3308,7 +3276,7 @@ extension WorkItem {
             let isRubberTire = transport.contains("bus") || transport.contains("autobus")
             let isMovibus = transport.contains("movibus") || linesLower.contains { $0.hasPrefix("z6") }
             let isStav = transport.contains("stav") || linesLower.contains { $0.hasPrefix("z5") }
-            let isAutoguidovie = transport.contains("autoguidovie") || linesLower.contains {
+            let isAutoguidovie = transport.contains("Autoguidovie") || linesLower.contains {
                 $0.hasPrefix("z4") || $0.hasPrefix("z2")
             }
             
@@ -3327,8 +3295,8 @@ extension WorkItem {
             if linesLower.contains(where: { $0.hasPrefix("z5") }) { return true }
         }
         
-        if favorites.contains("z4") || favorites.contains("z2") {
-            if transport.contains("autoguidovie") { return true }
+        if favorites.contains("Autoguidovie") {
+            if transport.contains("Autoguidovie") { return true }
             if linesLower.contains(where: {
                 $0.hasPrefix("z4") || $0.hasPrefix("z2")
             }) {
