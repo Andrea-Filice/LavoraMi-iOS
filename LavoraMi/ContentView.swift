@@ -720,6 +720,7 @@ struct SettingsView: View{
     @AppStorage("enableNotifications") private var enableNotifications: Bool = true
     @AppStorage("linesFavorites") private var linesFavorites: [String] = []
     @AppStorage("preferredFilter") private var preferredFilter: FilterBy = .all
+    @AppStorage("appearanceSelection") private var appearanceSelection: AppearanceType = .system
     @AppStorage("showErrorMessages") var showErrorMessages: Bool = false
     @AppStorage("showStrikeBanner") var showStrikeBanner: Bool = true
     @AppStorage("requireFaceID") var requireFaceID: Bool = true
@@ -985,6 +986,15 @@ struct SettingsView: View{
                         Label("Filtro Predefinito", systemImage: "line.3.horizontal.decrease.circle.fill")
                     }
                     .pickerStyle(.navigationLink)
+                    Picker(selection: $appearanceSelection){
+                        ForEach(AppearanceType.allCases) { filter in
+                            Text(filter.description).tag(filter)
+                                .foregroundStyle(Color("TextColor"))
+                        }
+                    } label: {
+                        Label("Aspetto", systemImage: "circle.righthalf.filled")
+                    }
+                    .pickerStyle(.navigationLink)
                     NavigationLink(destination: AdvancedOptionsView()){
                         Label("Opzioni Avanzate", systemImage: "gearshape.fill")
                     }
@@ -1034,6 +1044,7 @@ struct SettingsView: View{
                     requireFaceID = true
                     howToOpenLinks = .inApp
                     showDebugInfos = false
+                    appearanceSelection = .system
                 }
             } message: {
                 Text("Sei sicuro di voler ripristinare le impostazioni?")
@@ -3110,6 +3121,22 @@ enum FilterBy: String, CaseIterable, Identifiable {
     case Autoguidovie = "di Autoguidovie"
     
     var id: String{self.rawValue}
+}
+
+enum AppearanceType: Int, CaseIterable, Identifiable {
+    case system = 0
+    case dark = 1
+    case light = 2
+    
+    var description: String {
+        switch self {
+            case .system: return "Sistema"
+            case .light: return "Chiaro"
+            case .dark: return "Scuro"
+        }
+    }
+    
+    var id: Int{self.rawValue}
 }
 
 enum TimeToLock: String, CaseIterable, Identifiable {
