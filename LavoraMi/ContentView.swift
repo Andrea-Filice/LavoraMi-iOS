@@ -1672,10 +1672,12 @@ struct NotificationsView: View {
     @AppStorage("workInProgressNotifications") var workInProgressNotifications: Bool = true
     @AppStorage("strikeNotifications") var strikeNotifications: Bool = true
     @AppStorage("enableNotifications") var enableNotifications: Bool = true
+    @AppStorage("enablePushNotifications") var enablePushNotifications: Bool = true
     @AppStorage("linesFavorites") var linesFavorites: [String] = []
     @AppStorage("notificationConsent") var notificationConsent: Bool = false
     
-    static var defaultTime: Date { //MARK: SET DEFAULT VALUE OF DATEPICKER
+    static var defaultTime: Date {
+        //MARK: SET DEFAULT VALUE OF DATEPICKER
         var components = DateComponents()
         components.hour = 10
         components.minute = 0
@@ -1717,6 +1719,7 @@ struct NotificationsView: View {
                     workScheduledNotifications = enableNotifications
                     workInProgressNotifications = enableNotifications
                     strikeNotifications = enableNotifications
+                    enablePushNotifications = enableNotifications
                     
                     //SYNC NOTIFICATIONS
                     viewModel.fetchVariables()
@@ -1744,13 +1747,16 @@ struct NotificationsView: View {
                         .disabled(!enableNotifications)
                     }
                     
-                    Section("Notifiche Scioperi") {
+                    Section("Altre Notifiche") {
                         Toggle(isOn: $strikeNotifications) {
                             Label("Notifiche Scioperi", systemImage: "bell.badge.waveform.fill")
                         }
                         .onChange(of: strikeNotifications){
                             viewModel.fetchVariables()
-                            print("-- INIZIO SYNCH NOTIFICHE STRIKE --")
+                        }
+                        .disabled(!enableNotifications)
+                        Toggle(isOn: $enablePushNotifications) {
+                            Label("Notifiche Push", systemImage: "bell.and.waves.left.and.right.fill")
                         }
                         .disabled(!enableNotifications)
                     }
@@ -3482,10 +3488,9 @@ func getColor(for line: String) -> Color {
             return Color.blue
         case _ where line.contains("RE"):
             return Color.red
-        case let s where (1...33).contains(Int(s) ?? 0):
-            return .orange
+        case let s where (1...33).contains(Int(s) ?? 0): return .orange
         
-        default: return Color.gray
+        default: return Color(red: 101/255, green: 179/255, blue: 46/255)
     }
 }
 
