@@ -61,9 +61,18 @@ class AuthManager: ObservableObject {
         isLoading = false
     }
     
-    func signInWithApple(nonce: String, idToken: String) async {
-        do{
+    func signInWithApple(nonce: String, idToken: String, fullName: String?) async {
+        do {
             try await supabase.auth.signInWithIdToken(credentials: .init(provider: .apple, idToken: idToken, nonce: nonce))
+            
+            //SETUP THE NAME OF THE ACCOUNT
+            if let name = fullName, !name.isEmpty {
+                let metadata: [String: AnyJSON] = ["full_name": .string(name)]
+                try await supabase.auth.update(user: UserAttributes(data: metadata))
+                self.session = try await supabase.auth.session
+            }
+            
+            self.session = try await supabase.auth.session
         }
         catch{
             print("Errore durante il login con Apple.")
@@ -136,4 +145,6 @@ class AuthManager: ObservableObject {
             print("Errore durante l'invio della mail.")
         }
     }
+    
+    func isLoggedInWithApple() -> Bool {return session?.user.appMetadata["provider"]?.stringValue == "apple"}
 }

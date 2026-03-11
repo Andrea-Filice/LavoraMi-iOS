@@ -1108,6 +1108,7 @@ struct AccountView: View {
     @State private var text: String = ""
     @State private var isBiometricAuthCompleted: Bool = false
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) var colorScheme
     
     @AppStorage("requireFaceID") var requireFaceID: Bool = true
     @State var isRequiringData: Bool = false
@@ -1180,7 +1181,36 @@ struct AccountView: View {
                     }
 
                     Spacer()
-
+                    SignInWithAppleButton(.signIn) { request in
+                        let nonce = randomNonceString()
+                        currentNonce = nonce
+                        request.requestedScopes = [.fullName, .email]
+                        request.nonce = sha256(nonce)
+                    } onCompletion: { result in
+                        Task {
+                            switch result {
+                            case .failure(let error):
+                                print("Apple Sign In error: \(error)")
+                            case .success(let authorization):
+                                guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+                                      let idTokenData = credential.identityToken,
+                                      let idToken = String(data: idTokenData, encoding: .utf8),
+                                      let nonce = currentNonce
+                                else {
+                                    print("Error Guard, currentNonce: \(String(describing: currentNonce))")
+                                    return
+                                }
+                                
+                                let name = credential.fullName?.givenName ?? "Utente Apple"
+                                
+                                await auth.signInWithApple(nonce: nonce, idToken: idToken, fullName: name)
+                                loggedIn = auth.isLoggedIn()
+                            }
+                        }
+                    }
+                    .signInWithAppleButtonStyle((colorScheme == .dark) ? .whiteOutline : .black)
+                    .frame(height: 50)
+                    .cornerRadius(16)
                     Button(action: {
                         Task {
                             await auth.signIn(email: email, password: password)
@@ -1277,7 +1307,7 @@ struct AccountView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     Spacer()
-                    SignInWithAppleButton(.signIn) { request in
+                    SignInWithAppleButton(.signUp) { request in
                         let nonce = randomNonceString()
                         currentNonce = nonce
                         request.requestedScopes = [.fullName, .email]
@@ -1296,16 +1326,17 @@ struct AccountView: View {
                                     return
                                 }
                                 
-                                await auth.signInWithApple(nonce: nonce, idToken: idToken)
+                                let name = credential.fullName?.givenName ?? "Utente Apple"
+                                
+                                await auth.signInWithApple(nonce: nonce, idToken: idToken, fullName: name)
                                 loggedIn = auth.isLoggedIn()
                                 dismiss()
                             }
                         }
                     }
-                    .signInWithAppleButtonStyle(.black)
+                    .signInWithAppleButtonStyle((colorScheme == .dark) ? .whiteOutline : .black)
                     .frame(height: 50)
-                    .padding(.horizontal)
-                    .padding(.bottom)
+                    .cornerRadius(16)
                     Button(action: {
                         Task {
                             await auth.signUp(email: email, password: password, name: fullName)
@@ -1371,24 +1402,38 @@ struct AccountView: View {
                                         .foregroundStyle(.red)
                                         .font(.system(size: 25))
                                 }
+                                
+                                if(auth.isLoggedInWithApple()) {
+                                    Label {
+                                        Text("Account creato con Apple.")
+                                            .foregroundColor(Color("TextColor"))
+                                            .font(.system(size: 25))
+                                    } icon: {
+                                        Image(systemName: "apple.logo")
+                                            .foregroundStyle(Color("TextColor"))
+                                            .font(.system(size: 25))
+                                    }
+                                }
                             }
                         }
                         .foregroundStyle(.gray)
                         
                         Section("Gestisci"){
                             VStack (spacing: 8){
-                                Button(role: .destructive, action: {
-                                    showEditPasswordPopUp = true
-                                }) {
-                                    Label("Modifica Password", systemImage: "lock.fill")
-                                        .font(.system(size: 15))
-                                        .fontWeight(.bold)
-                                        .foregroundStyle(.white)
-                                        .frame(maxWidth: .infinity)
-                                        .padding()
-                                        .background(Color.blue)
-                                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                                        .shadow(radius: 5, y: 3)
+                                if(!auth.isLoggedInWithApple()){
+                                    Button(role: .destructive, action: {
+                                        showEditPasswordPopUp = true
+                                    }) {
+                                        Label("Modifica Password", systemImage: "lock.fill")
+                                            .font(.system(size: 15))
+                                            .fontWeight(.bold)
+                                            .foregroundStyle(.white)
+                                            .frame(maxWidth: .infinity)
+                                            .padding()
+                                            .background(Color.blue)
+                                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                                            .shadow(radius: 5, y: 3)
+                                    }
                                 }
                                 Button(role: .destructive, action: {
                                     showDeletePopUp = true
