@@ -240,7 +240,6 @@ struct MainView: View{
     @AppStorage("preferredFilter") private var preferredFilter: FilterBy = .all
     @AppStorage("showErrorMessages") var showErrorMessages: Bool = false
     @AppStorage("showStrikeBanner") var showStrikeBanner: Bool = true
-    @AppStorage("showDebugInfos") var showDebugInfos: Bool = false
     @AppStorage("linesFavorites") var linesFavorites: [String] = []
     
     @State private var closedStrike: Bool = false
@@ -492,13 +491,6 @@ struct MainView: View{
                                     }
                                 }
                                 .padding(.vertical, 8)
-                                if(showDebugInfos){
-                                    Divider()
-                                    Text("Totale lavori caricati: \(filteredItems.count)")
-                                        .bold()
-                                        .padding(.top, 10)
-                                        .padding(.bottom, 10)
-                                }
                             }
                         }
                     }
@@ -736,7 +728,6 @@ struct SettingsView: View{
     @AppStorage("showErrorMessages") var showErrorMessages: Bool = false
     @AppStorage("showStrikeBanner") var showStrikeBanner: Bool = true
     @AppStorage("requireFaceID") var requireFaceID: Bool = true
-    @AppStorage("showDebugInfos") var showDebugInfos: Bool = false
     @AppStorage("linkOpenURL") var howToOpenLinks: linkOpenTypes = .inApp
     
     let metroLines = ["M1", "M2", "M3", "M4", "M5"]
@@ -1079,7 +1070,6 @@ struct SettingsView: View{
                     showStrikeBanner = true
                     requireFaceID = true
                     howToOpenLinks = .inApp
-                    showDebugInfos = false
                     appearanceSelection = .system
                 }
             } message: {
@@ -1405,7 +1395,7 @@ struct AccountView: View {
                                 
                                 if(auth.isLoggedInWithApple()) {
                                     Label {
-                                        Text("Account creato con Apple.")
+                                        Text("Account creato con Apple")
                                             .foregroundColor(Color("TextColor"))
                                             .font(.system(size: 25))
                                     } icon: {
@@ -1625,7 +1615,6 @@ struct AdvancedOptionsView: View {
     @AppStorage("showErrorMessages") var showErrorMessages: Bool = false
     @AppStorage("showStrikeBanner") var showStrikeBanner: Bool = true
     @AppStorage("requireFaceID") var requireFaceID: Bool = true
-    @AppStorage("showDebugInfos") var showDebugInfos: Bool = false
     @AppStorage("linkOpenURL") var howToOpenLinks: linkOpenTypes = .inApp
     private var currentDeviceBiometric: BiometricType = BiometricAuth.getBiometricType()
     @State private var presentedCacheAlert = false
@@ -1659,11 +1648,6 @@ struct AdvancedOptionsView: View {
                     else{
                         requireFaceID = requireFaceID
                     }
-                }
-            }
-            Section(footer: Text("Mostra alla fine della pagina Home, quanti lavori sono stati caricati in totale.")){
-                Toggle(isOn: $showDebugInfos){
-                    Label("Mostra più Informazioni", systemImage: "square.and.arrow.down.on.square.fill")
                 }
             }
             Section(footer: Text("Seleziona la modalità in cui aprire i link.")){
