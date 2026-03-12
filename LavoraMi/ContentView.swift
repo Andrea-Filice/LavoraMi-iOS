@@ -1037,7 +1037,7 @@ struct SettingsView: View{
                         Label("Opzioni Avanzate", systemImage: "gearshape.fill")
                     }
                 }
-                Section("Informazioni"){
+                Section("Aiuto"){
                     NavigationLink(destination: InfoView()){
                         Label("Fonti & Sviluppo", systemImage: "person.crop.circle.badge.questionmark")
                     }
