@@ -249,6 +249,17 @@ struct MainView: View{
     
     @ObservedObject var viewModel: WorkViewModel
     @FocusState private var isSearchFocused: Bool
+    @State private var currentHintIndex: Int = 0
+    
+    private let searchHints = [
+        "Cerca nei lavori...",
+        "Scopri qualcosa di nuovo...",
+        "Cerca la tua linea...",
+        "Cerca ciò che ami...",
+        "Non essere l'ultimo a sapere le cose...",
+        "Scopri le novità...",
+        "Lavori della settimana..."
+    ]
     
     init(viewModel: WorkViewModel) {
         self._viewModel = ObservedObject(wrappedValue: viewModel)
@@ -332,11 +343,24 @@ struct MainView: View{
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.gray)
-                TextField("Cerca linea (es. S5, RE8)...", text: $searchInput)
-                    .foregroundColor(.primary)
-                    .autocorrectionDisabled(true)
-                    .focused($isSearchFocused)
-                    .submitLabel(.done)
+                
+                ZStack(alignment: .leading) {
+                    if searchInput.isEmpty && !isSearchFocused {
+                        Text(searchHints[currentHintIndex])
+                            .foregroundColor(.gray.opacity(0.55))
+                            .allowsHitTesting(false)
+                            .id(currentHintIndex)
+                            .transition(.asymmetric(
+                                insertion: .move(edge: .bottom).combined(with: .opacity),
+                                removal: .move(edge: .top).combined(with: .opacity)
+                            ))
+                    }
+                    TextField("", text: $searchInput)
+                        .foregroundColor(.primary)
+                        .autocorrectionDisabled(true)
+                        .focused($isSearchFocused)
+                        .submitLabel(.done)
+                }
                 
                 if !searchInput.isEmpty {
                     Button(action: {
@@ -348,6 +372,14 @@ struct MainView: View{
                 }
             }
             .padding()
+            .task {
+                while !Task.isCancelled {
+                    try? await Task.sleep(nanoseconds: 5_000_000_000)
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        currentHintIndex = (currentHintIndex + 1) % searchHints.count
+                    }
+                }
+            }
             if(viewModel.strikeEnabled && !closedStrike && showStrikeBanner){
                 VStack(spacing: 8) {
                     Label("AVVISO SCIOPERO", systemImage: "exclamationmark.triangle.fill")
