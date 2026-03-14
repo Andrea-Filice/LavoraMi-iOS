@@ -2679,7 +2679,7 @@ struct LineRow: View {
     @ObservedObject var viewModel: WorkViewModel
     
     var body: some View {
-        if typeOfTransport == "Tram" && line == "1" || typeOfTransport == "Movibus" || typeOfTransport == "STAV" || typeOfTransport == "Autoguidovie" {
+        if ((typeOfTransport != "Tram" || line == "1") && typeOfTransport != "Movibus" && typeOfTransport != "STAV" && typeOfTransport != "Autoguidovie") {
             NavigationLink(
                 destination: LineDetailView(
                     lineName: line,
