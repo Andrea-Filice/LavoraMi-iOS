@@ -2893,6 +2893,7 @@ struct LineDetailView: View {
     let stations: [MetroStation]
     
     @AppStorage("selectedWidgetLine") private var selectedWidgetLine: String = ""
+    @Environment(\.colorScheme) var colorScheme
     
     private enum LineDetailTab { case map, works, interchanges }
     @State private var selectedTab: LineDetailTab = .map
@@ -3038,7 +3039,7 @@ struct LineDetailView: View {
                             .background(
                                 ZStack {
                                     if selectedTab == .map {
-                                        Capsule().fill((lineName == "S12") ? .white : getColor(for: lineName))
+                                        Capsule().fill((lineName == "S12" && colorScheme == .dark) ? .white : getColor(for: lineName))
                                     } else {
                                         Capsule().stroke(Color.secondary, lineWidth: 1)
                                     }
@@ -3061,7 +3062,7 @@ struct LineDetailView: View {
                             .background(
                                 ZStack {
                                     if selectedTab == .works {
-                                        Capsule().fill((lineName == "S12") ? .white : getColor(for: lineName))
+                                        Capsule().fill((lineName == "S12" && colorScheme == .dark) ? .white : getColor(for: lineName))
                                     } else {
                                         Capsule().stroke(Color.secondary, lineWidth: 1)
                                     }
@@ -3083,7 +3084,7 @@ struct LineDetailView: View {
                             .background(
                                 ZStack {
                                     if selectedTab == .interchanges {
-                                        Capsule().fill((lineName == "S12") ? .white : getColor(for: lineName))
+                                        Capsule().fill((lineName == "S12" && colorScheme == .dark) ? .white : getColor(for: lineName))
                                     } else {
                                         Capsule().stroke(Color.secondary, lineWidth: 1)
                                     }
