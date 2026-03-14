@@ -2264,6 +2264,179 @@ struct LibraryDetailView: View {
 struct LibrariesView: View {
     let libraries: [LibraryDetailView] = [
         LibraryDetailView(
+            name: "abseil",
+            version: "1.2024072200.0",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2017 The Abseil Authors",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
+            name: "AppCheck",
+            version: "11.2.0",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2020 Google LLC",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
+            name: "Firebase",
+            version: "12.10.0",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2016 Google LLC",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
+            name: "GoogleAdsOnDeviceConversion",
+            version: "3.3.0",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2023 Google LLC",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
+            name: "GoogleAppMeasurement",
+            version: "12.10.0",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2016 Google LLC",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
+            name: "GoogleDataTransport",
+            version: "10.1.0",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2019 Google LLC",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
+            name: "GoogleUtilities",
+            version: "8.1.0",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2017 Google LLC",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
+            name: "gRPC",
+            version: "1.69.1",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2015 gRPC authors",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
+            name: "GTMSessionFetcher",
+            version: "5.1.0",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2014 Google LLC",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
+            name: "InteropForGoogle",
+            version: "101.0.0",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2019 Google LLC",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
+            name: "leveldb",
+            version: "1.22.5",
+            license: "BSD 3-Clause License",
+            copyright: "Copyright (c) 2011 The LevelDB Authors",
+            licenseText: """
+            Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+            1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+            2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+            3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+            THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES ARE DISCLAIMED.
+            """
+        ),
+        LibraryDetailView(
+            name: "nanopb",
+            version: "2.30910.0",
+            license: "Zlib License",
+            copyright: "Copyright (c) 2011 Petteri Aimonen",
+            licenseText: """
+            This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+
+            Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+
+            1. The origin of this software must not be misrepresented.
+            2. Altered source versions must be plainly marked as such.
+            3. This notice may not be removed or altered from any source distribution.
+            """
+        ),
+        LibraryDetailView(
+            name: "Promises",
+            version: "2.4.0",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2018 Google LLC",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
             name: "Supabase",
             version: "2.41.1",
             license: "MIT License",
