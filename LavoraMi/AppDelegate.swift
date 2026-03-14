@@ -7,16 +7,67 @@
 
 import SwiftUI
 import UserNotifications
+import FirebaseCore
+import FirebaseMessaging
 
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-    
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
         UNUserNotificationCenter.current().delegate = self
+        Messaging.messaging().delegate = self
+
+        NotificationCenter.default.addObserver(self, selector: #selector(handlePushToggle(_:)), name: NSNotification.Name("pushNotificationsToggled"), object: nil)
+
+        let pushAbilitate = UserDefaults.standard.object(forKey: "enablePushNotifications") == nil
+            ? false
+            : UserDefaults.standard.bool(forKey: "enablePushNotifications")
+
+        if pushAbilitate {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
+                guard granted else { return }
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            }
+        }
+
         return true
     }
-    
+
+    @objc func handlePushToggle(_ notification: Notification) {
+        guard let enabled = notification.object as? Bool else { return }
+        if enabled {
+            UIApplication.shared.registerForRemoteNotifications()
+        } else {
+            Messaging.messaging().deleteToken { _ in
+                UserDefaults.standard.removeObject(forKey: "fcmToken")
+            }
+            UIApplication.shared.unregisterForRemoteNotifications()
+        }
+    }
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        guard UserDefaults.standard.bool(forKey: "enablePushNotifications") else { return }
+        Messaging.messaging().apnsToken = deviceToken
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("Errore registrazione APNs: \(error.localizedDescription)")
+    }
+
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        guard UserDefaults.standard.bool(forKey: "enablePushNotifications") else { return }
+        guard let token = fcmToken else { return }
+        print("FCM Token: \(token)")
+        UserDefaults.standard.set(token, forKey: "fcmToken")
+    }
+
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        
-        completionHandler([.banner, .sound, .badge, .list])
+        let pushAbilitate = UserDefaults.standard.object(forKey: "enablePushNotifications") == nil
+            ? true
+            : UserDefaults.standard.bool(forKey: "enablePushNotifications")
+
+        completionHandler(pushAbilitate ? [.banner, .sound, .badge, .list] : [])
     }
 }

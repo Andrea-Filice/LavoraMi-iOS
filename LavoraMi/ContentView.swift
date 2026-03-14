@@ -13,7 +13,9 @@ import LocalAuthentication
 import SwiftUIMailView
 import AuthenticationServices
 import CryptoKit
+import FirebaseCore
 internal import Auth
+import FirebaseMessaging
 
 struct WorkItem: Identifiable, Hashable, Codable {
     var id = UUID()
@@ -1899,6 +1901,9 @@ struct NotificationsView: View {
                         .disabled(!enableNotifications)
                         Toggle(isOn: $enablePushNotifications) {
                             Label("Notifiche Push", systemImage: "bell.and.waves.left.and.right.fill")
+                        }
+                        .onChange(of: enablePushNotifications) { enabled in
+                            NotificationCenter.default.post(name: NSNotification.Name("pushNotificationsToggled"), object: enabled)
                         }
                         .disabled(!enableNotifications)
                     }
