@@ -511,7 +511,7 @@ struct MainView: View{
                             ScrollView {
                                 VStack(spacing: 12) {
                                     if(filteredItems.isEmpty){
-                                        Text("Nessun lavoro trovato per il filtro selezionato.")
+                                        Text("Nessun lavoro trovato per questo filtro.")
                                     }
                                     else{
                                         ForEach(filteredItems) { item in
@@ -2538,7 +2538,7 @@ struct LinesView: View {
                 }
             }
             .padding()
-            List{
+            List {
                 Section(){
                     if(!filteredMetros.isEmpty){
                         ForEach(filteredMetros, id: \.id) { line in
@@ -2849,6 +2849,12 @@ struct LinesView: View {
                     .edgesIgnoringSafeArea(.all)
             }
             .navigationTitle("Linee")
+            let allFiltered = [filteredMetros, filteredSuburban, filteredCrossBorders, filteredMalpensaExpress, filteredTrams, filteredMovibus, filteredSTAV, filteredAutoguidovie]
+
+            if allFiltered.allSatisfy({ $0.isEmpty }) {
+                Text("Nessun risultato per: \"\(searchInput)\".")
+                    .padding(.bottom, 120)
+            }
         }
     }
 }
