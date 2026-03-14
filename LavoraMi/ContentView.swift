@@ -2123,6 +2123,12 @@ struct InfoView: View {
                     }
                     .padding(.top, 5)
                     .padding(.bottom, 20)
+                    NavigationLink(destination: LibrariesView()) {
+                        Label("Riconoscimenti", systemImage: "person.3.fill")
+                            .font(.system(size: 20))
+                    }
+                    .padding(.top, 5)
+                    .padding(.bottom, 20)
                     NavigationLink(destination: RequestDataDownload(isRequiringData: .constant(false))) {
                         Label("Richiedi i tuoi dati", systemImage: "person.and.background.dotted")
                             .font(.system(size: 20))
@@ -2144,6 +2150,260 @@ struct InfoView: View {
         }
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+struct LibraryRowView: View {
+    let name: String
+    let version: String
+    let license: String
+    let copyright: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(name)
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                Spacer()
+                Text(version)
+                    .font(.caption)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .background(Color(.systemGray4))
+                    .cornerRadius(8)
+            }
+
+            HStack {
+                Text(license)
+                    .font(.subheadline)
+                    .foregroundColor(.primary)
+            }
+
+            Text(copyright)
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(12)
+    }
+}
+
+struct LibraryDetailView: View {
+    let name: String
+    let version: String
+    let license: String
+    let copyright: String
+    let licenseText: String
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Informazioni sul componente")
+                        .font(.title2).bold()
+                        .padding(.bottom, 10)
+
+                    VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Nome:").font(.caption).foregroundColor(.secondary)
+                            Text(name).font(.body).bold()
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Versione:").font(.caption).foregroundColor(.secondary)
+                            Text(version).font(.body).bold()
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Licenza:").font(.caption).foregroundColor(.secondary)
+                            Text(license).font(.body).bold()
+                        }
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(12)
+                }
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Copyright")
+                        .font(.title2).bold()
+
+                    Text(copyright)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color(.secondarySystemBackground))
+                        .cornerRadius(12)
+                }
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Testo della licenza")
+                        .font(.title2).bold()
+
+                    Text(licenseText)
+                        .font(.system(.caption, design: .monospaced))
+                        .foregroundColor(.secondary)
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color(.secondarySystemBackground))
+                        .cornerRadius(12)
+                }
+            }
+            .padding()
+        }
+        .navigationTitle(name)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+struct LibrariesView: View {
+    let libraries: [LibraryDetailView] = [
+        LibraryDetailView(
+            name: "Supabase",
+            version: "2.41.1",
+            license: "MIT License",
+            copyright: "Copyright (c) 2021 Supabase",
+            licenseText: """
+            MIT License
+
+            Copyright (c) 2021 Supabase
+
+            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+            """
+        ),
+        LibraryDetailView(
+            name: "swift-asn1",
+            version: "1.5.1",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2022 Apple Inc.",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
+            name: "swift-clocks",
+            version: "1.0.6",
+            license: "MIT License",
+            copyright: "Copyright (c) 2022 Point-Free, Inc.",
+            licenseText: """
+            MIT License
+
+            Copyright (c) 2022 Point-Free, Inc.
+
+            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+            """
+        ),
+        LibraryDetailView(
+            name: "swift-concurrency-extras",
+            version: "1.3.2",
+            license: "MIT License",
+            copyright: "Copyright (c) 2023 Point-Free, Inc.",
+            licenseText: """
+            MIT License
+
+            Copyright (c) 2023 Point-Free, Inc.
+
+            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+            """
+        ),
+        LibraryDetailView(
+            name: "swift-crypto",
+            version: "4.2.0",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2019 Apple Inc.",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
+            name: "swift-http-types",
+            version: "1.5.1",
+            license: "Apache License 2.0",
+            copyright: "Copyright (c) 2023 Apple Inc.",
+            licenseText: """
+            Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+            https://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            """
+        ),
+        LibraryDetailView(
+            name: "SwiftUIMailView",
+            version: "1.0.1",
+            license: "MIT License",
+            copyright: "Copyright (c) 2021 Gordan Glavaš",
+            licenseText: """
+            MIT License
+
+            Copyright (c) 2021 Gordan Glavaš
+
+            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+            """
+        ),
+        LibraryDetailView (
+            name: "xctest-dynamic-overlay",
+            version: "1.9.0",
+            license: "MIT License",
+            copyright: "Copyright (c) 2021 Point-Free, Inc.",
+            licenseText: """
+            MIT License
+
+            Copyright (c) 2021 Point-Free, Inc.
+
+            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+            """
+        )
+    ]
+    
+    var body: some View {
+        List {
+            ForEach(libraries, id: \.name) { library in
+                NavigationLink(destination: LibraryDetailView(
+                    name: library.name,
+                    version: library.version,
+                    license: library.license,
+                    copyright: library.copyright,
+                    licenseText: library.licenseText
+                )) {
+                    LibraryRowView(
+                        name: library.name,
+                        version: library.version,
+                        license: library.license,
+                        copyright: library.copyright
+                    )
+                }
+            }
+        }
+        .navigationTitle("Riconoscimenti")
     }
 }
 
