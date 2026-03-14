@@ -2679,7 +2679,7 @@ struct LineRow: View {
     @ObservedObject var viewModel: WorkViewModel
     
     var body: some View {
-        if ((typeOfTransport != "Tram" || line == "1") && typeOfTransport != "Movibus" && typeOfTransport != "STAV" && typeOfTransport != "Autoguidovie") {
+        if ((typeOfTransport != "Tram" || (line == "1" || line == "24")) && typeOfTransport != "Movibus" && typeOfTransport != "STAV" && typeOfTransport != "Autoguidovie") {
             NavigationLink(
                 destination: LineDetailView(
                     lineName: line,
@@ -2856,7 +2856,7 @@ struct LinesView: View {
             LineInfo(name: "15", branches: "Duomo M1 M3 - Rozzano (Via G. Rossa)", type: "Tram", waitMinutes: "5-20 min.", stations: []),
             LineInfo(name: "16", branches: "San Siro Stadio M5 - Via Monte Velino", type: "Tram", waitMinutes: "5-20 min.", stations: []),
             LineInfo(name: "19", branches: "P.Za Castelli - Lambrate FS M2", type: "Tram", waitMinutes: "5-20 min.", stations: []),
-            LineInfo(name: "24", branches: "Duomo M1 M3 - Vigentino", type: "Tram", waitMinutes: "5-20 min.", stations: []),
+            LineInfo(name: "24", branches: "Piazza Fontana - Vigentino", type: "Tram", waitMinutes: "5-20 min.", stations: StationsDB.tram24),
             LineInfo(name: "27", branches: "V.Le Ungheria - Duomo M1 M3", type: "Tram", waitMinutes: "5-20 min.", stations: []),
             LineInfo(name: "31", branches: "Bicocca M5 - Cinisello (1° Maggio)", type: "Tram", waitMinutes: "5-20 min.", stations: []),
             LineInfo(name: "33", branches: "P.Le Lagosta - Rimembranze di Lambrate", type: "Tram", waitMinutes: "5-20 min.", stations: []),
@@ -3461,7 +3461,7 @@ struct LineDetailView: View {
                             .font(.title3)
                             .multilineTextAlignment(.leading)
                     }
-                    if(lineName == "1"){
+                    if(lineName == "1" || lineName == "24") {
                         Text("LA MAPPA PER I TRAM È IN BETA.")
                             .font(.system(size: 12))
                             .foregroundStyle(.secondary)
@@ -3550,7 +3550,7 @@ struct LineDetailView: View {
                         initialPosition: .region(
                             MKCoordinateRegion(
                                 center: centerCoordinate,
-                                span: MKCoordinateSpan(latitudeDelta: (lineName == "1" ? 0.02 : 0.15), longitudeDelta: (lineName == "1" ? 0.02 : 0.15))
+                                span: MKCoordinateSpan(latitudeDelta: ((lineName == "1" || lineName == "24") ? 0.02 : 0.15), longitudeDelta: ((lineName == "1" || lineName == "24") ? 0.02 : 0.15))
                             )
                         ),
                         bounds: lombardyBounds,

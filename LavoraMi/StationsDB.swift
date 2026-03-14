@@ -633,6 +633,27 @@ struct StationsDB {
         .init(name: "Greco Rovereto", coordinate: .init(latitude: 45.49495, longitude: 9.21625), branch: "Main")
     ]
     
+    static let tram24: [MetroStation] = [
+        .init(name: "Vigentino", coordinate: .init(latitude: 45.42196, longitude: 9.20354), branch: "Main"),
+        .init(name: "Via Ripamonti Via Chopin", coordinate: .init(latitude: 45.42577, longitude: 9.20336), branch: "Main"),
+        .init(name: "Via Ripamonti Via Val Di Sole", coordinate: .init(latitude: 45.42863, longitude: 9.20246), branch: "Main"),
+        .init(name: "Via Ripamonti Via Noto", coordinate: .init(latitude: 45.43143, longitude: 9.20178), branch: "Main"),
+        .init(name: "Via Ripamonti Via Dell'Assunta", coordinate: .init(latitude: 45.43338, longitude: 9.20105), branch: "Main"),
+        .init(name: "Via Ripamonti Via Quaranta", coordinate: .init(latitude: 45.43555, longitude: 9.20065), branch: "Main"),
+        .init(name: "Via Ripamonti Via Rutilia", coordinate: .init(latitude: 45.43976, longitude: 9.19983), branch: "Main"),
+        .init(name: "Via Ripamonti Via Lorenzini", coordinate: .init(latitude: 45.44309, longitude: 9.19892), branch: "Main"),
+        .init(name: "V.Le Isonzo Via Ripamonti", coordinate: .init(latitude: 45.44677, longitude: 9.19801), branch: "Main"),
+        .init(name: "Via Ripamonti Via Bellezza", coordinate: .init(latitude: 45.44833, longitude: 9.1976), branch: "Main"),
+        .init(name: "Via Ripamonti V.Le Sabotino", coordinate: .init(latitude: 45.45076, longitude: 9.19695), branch: "Main"),
+        .init(name: "C.So Porta Vigentina", coordinate: .init(latitude: 45.45364, longitude: 9.19607), branch: "Main"),
+        .init(name: "Crocetta M3", coordinate: .init(latitude: 45.45537, longitude: 9.19561), branch: "Main"),
+        .init(name: "Sforza - Policlinico M4", coordinate: .init(latitude: 45.4582, longitude: 9.19246), branch: "Main"),
+        .init(name: "Missori M3", coordinate: .init(latitude: 45.4604, longitude: 9.18866), branch: "Main"),
+        .init(name: "Piazza Missori", coordinate: .init(latitude: 45.46092, longitude: 9.18993), branch: "Main"),
+        .init(name: "Via Larga", coordinate: .init(latitude: 45.46237, longitude: 9.19372), branch: "Main"),
+        .init(name: "Piazza Fontana", coordinate: .init(latitude: 45.46337, longitude: 9.19405), branch: "Main")
+    ]
+    
     static let interchanges: [InterchageInfo] = [
         .init(name: "Rho Fiera-Milano", lines: ["M1", "AV", "R21", "R23", "RE4", "RE5", "S5", "S6", "S11"], typeOfInterchange: "lightrail"),
         .init(name: "Lotto", lines: ["M1", "M5"], typeOfInterchange: "tram.fill.tunnel"),
