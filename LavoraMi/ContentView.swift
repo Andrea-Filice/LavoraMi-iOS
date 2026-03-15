@@ -2056,6 +2056,21 @@ struct InfoView: View {
                     }
                     .padding(.top, 5)
                     .padding(.bottom, 20)
+                    Button {
+                        let url = URL(string: "https://www.buymeacoffee.com/lavorami")!
+                        
+                        if(howToOpenLinks == .inApp) {
+                            selectedURL = url
+                        }
+                        else {
+                            openURLAction(url)
+                        }
+                    } label: {
+                        Label("Supportaci su Buy Me A Coffee", systemImage: "cup.and.heat.waves.fill")
+                            .font(.system(size: 20))
+                    }
+                    .padding(.top, 5)
+                    .padding(.bottom, 20)
                     Spacer()
                 }
                 Divider().padding(.top, 10)
