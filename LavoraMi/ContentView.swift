@@ -156,11 +156,10 @@ struct SetupView: View {
             .navigationTitle(Text("LavoraMi"))
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    if #available (iOS 26, *){
-                        Button("Salta") { showPopUpConfirmSkipSetup = true }
-                    }
-                    else{
-                        Button("Salta") { showPopUpConfirmSkipSetup = true }
+                    Button {
+                        showPopUpConfirmSkipSetup = true
+                    } label: {
+                        Image(systemName: "forward.fill")
                             .foregroundStyle(.red)
                     }
                 }
